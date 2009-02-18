@@ -1,7 +1,10 @@
 #       $Id: /mirror/lab/perl/File-Find-Rule/lib/File/Find/Rule.pm 2102 2006-06-01T15:39:03.942922Z richardc  $
 
 package File::Find::Object::Rule;
+
 use strict;
+use warnings;
+
 use vars qw/$VERSION $AUTOLOAD/;
 use File::Spec;
 use Text::Glob 'glob_to_regex';
@@ -51,8 +54,14 @@ File::Find::Object::Rule - Alternative interface to File::Find::Object
 
 =head1 DESCRIPTION
 
-File::Find::Object::Rule is a friendlier interface to File::Find::Object.  It allows
-you to build rules which specify the desired files and directories.
+File::Find::Object::Rule is a friendlier interface to L<File::Find::Object> .
+It allows you to build rules which specify the desired files and directories.
+
+B<WARNING> : This module is a fork of version 0.30 of L<File::Find::Rule> 
+(which has been unmaintained for several years as of February, 2009), and may 
+still have some bugs due to its reliance on File::Find'isms. As such it is 
+considered Alpha software. Please report any problems with 
+L<File::Find::Object::Rule> to its RT CPAN Queue. 
 
 =cut
 
@@ -781,6 +790,9 @@ use.perl discussion: http://use.perl.org/~richardc/journal/6467
 Additional proofreading and input provided by Kake, Greg McCarroll,
 and Andy Lester andy@petdance.com.
 
+Ported to use L<File::Find::Object> as File::Find::Object::Rule by
+Shlomi Fish.
+
 =head1 COPYRIGHT
 
 Copyright (C) 2002, 2003, 2004, 2006 Richard Clamp.  All Rights Reserved.
@@ -790,13 +802,21 @@ under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<File::Find>, L<Text::Glob>, L<Number::Compare>, find(1)
+L<File::Find::Object>, L<Text::Glob>, L<Number::Compare>, find(1)
 
 If you want to know about the procedural interface, see
 L<File::Find::Object::Rule::Procedural>, and if you have an idea for a neat
 extension L<File::Find::Object::Rule::Extending>
 
+=head1 KNOWN BUGS
+
+The tests don't run successfully when directly inside a Subversion checkout,
+due to the presence of C<.svn> directories. C<./Build disttest> or
+C<./Build distruntest> run fine.
+
 =cut
+
+=begin Developers
 
 Implementation notes:
 
@@ -836,3 +856,7 @@ like so:
 Maybe the best way is to treat C<_> as invalid after calling an exec,
 and doc that C<_> will only be meaningful after stat and -X tests if
 they're wanted in exec blocks.
+
+=end Developers
+
+=cut
