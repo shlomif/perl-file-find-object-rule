@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:id="index" xml:lang="en">
+    <info>
+        <title>Alternatives to the Perl Core File::Find Module</title>
+        <author>
+            <personname>
+                <firstname>Shlomi</firstname>
+                <surname>Fish</surname>
+            </personname>
+            <affiliation>
+                <address>
+                    <email>shlomif@iglu.org.il</email>
+                </address>
+            </affiliation>
+        </author>
+        <copyright>
+            <year>2008</year>
+            <holder>Shlomi Fish</holder>
+        </copyright>
+        <legalnotice xml:lang="en">
+            <!-- Ci vis pacem -->
+            <para>
+                <!-- belum. ;-) -->
+                This document was written by Shlomi Fish and is available
+                under the terms of either the:
+            </para>
+            <orderedlist>
+                <listitem>
+                    <para>
+                        <link xlink:href="http://creativecommons.org/licenses/publicdomain/">The Public Domain</link>,
+                        as defined by the Creative Commons or your local
+                        jurisdication.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <link xlink:href="http://creativecommons.org/licenses/by/3.0/">The Creative Commons Attribution License (CC-by) version 3.0</link>
+                        (or at your option any later version of the same
+                        license.)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        The 
+                        <link
+                            xlink:href="http://www.opensource.org/licenses/mit-license.php">MIT
+                            X11 License</link>.
+                    </para>
+                </listitem>
+            </orderedlist>
+        </legalnotice>
+        <revhistory>
+            <revision>
+                <revnumber>2780</revnumber>
+                <date>18 February 2009</date>
+                <authorinitials>shlomif</authorinitials>
+                <revremark>
+                    Started working on this document after forking the template
+                    of an older one.
+                </revremark>
+            </revision>
+        </revhistory>
+    </info>
+
+    <section xml:id="limitations-of-File-Find">
+        <info>
+            <title>The Limitations of File::Find</title>
+        </info>
+    </section>
+</article>
