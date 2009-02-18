@@ -1,0 +1,92 @@
+README for File::Find::Rule 0.30
+
+=head1 NAME
+
+File::Find::Rule - Alternative interface to File::Find
+
+=head1 SYNOPSIS
+
+  use File::Find::Rule;
+  # find all the subdirectories of a given directory
+  my @subdirs = File::Find::Rule->directory->in( $directory );
+
+  # find all the .pm files in @INC
+  my @files = File::Find::Rule->file()
+                              ->name( '*.pm' )
+                              ->in( @INC );
+
+  # as above, but without method chaining
+  my $rule =  File::Find::Rule->new;
+  $rule->file;
+  $rule->name( '*.pm' );
+  my @files = $rule->in( @INC );
+
+
+=head1 DEPENDENCIES
+
+This module has external dependencies on the following modules:
+
+ Cwd
+ File::Find
+ File::Spec
+ Number::Compare
+ Test::More
+ Text::Glob
+
+=head1 INSTALLATION
+
+ perl Build.PL
+ perl Build test
+
+and if all goes well
+
+ perl Build install
+
+=head1 HISTORY
+
+What changed over the last 3 revisions
+
+=over
+
+=item 0.30 Wednesday 1st June, 2006
+
+	Made './//././././///.//././/////./blah' be treated the same 
+        as './blah' (it gets turned into 'blah')
+
+
+=item 0.29 Tuesday 16th May, 2006
+
+	Kludged around {min,max}depth and trailing slashes in path
+	names.
+
+
+=item 0.28 Tuesday 18th May, 2004
+
+	exposed %X_tests and @stat_tests as package variables, and make a
+	_call_find method for File::Find::Rule::Filesys::Virtual
+
+=back
+
+=head1 AUTHOR
+
+Richard Clamp <richardc@unixbeard.net> with input gained from this
+use.perl discussion: http://use.perl.org/~richardc/journal/6467
+
+Additional proofreading and input provided by Kake, Greg McCarroll,
+and Andy Lester andy@petdance.com.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2002, 2003, 2004, 2006 Richard Clamp.  All Rights Reserved.
+
+This module is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<File::Find>, L<Text::Glob>, L<Number::Compare>, find(1)
+
+If you want to know about the procedural interface, see
+L<File::Find::Rule::Procedural>, and if you have an idea for a neat
+extension L<File::Find::Rule::Extending>
+

@@ -1,0 +1,29 @@
+---
+name: File-Find-Object-Rule
+version: 0.01
+author:
+  - |-
+    Richard Clamp <richardc@unixbeard.net> with input gained from this
+    use.perl discussion: http://use.perl.org/~richardc/journal/6467
+  - |-
+    Additional proofreading and input provided by Kake, Greg McCarroll,
+    and Andy Lester andy@petdance.com.
+abstract: Alternative interface to File::Find::Object
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  Cwd: 0
+  File::Find: 0
+  File::Spec: 0
+  Number::Compare: 0
+  Test::More: 0
+  Text::Glob: 0
+provides:
+  File::Find::Object::Rule:
+    file: lib/File/Find/Object/Rule.pm
+    version: 0.01
+generated_by: Module::Build version 0.31
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
