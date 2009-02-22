@@ -1,6 +1,7 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+0.0101      Sun Feb 22 14:29:06 IST 2009
     - fixed the dependencies in Build.PL (especially File::Find::Object)
     - moved findrule to scripts/findorule
 

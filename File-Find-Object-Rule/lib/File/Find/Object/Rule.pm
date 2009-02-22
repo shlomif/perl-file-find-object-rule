@@ -14,7 +14,7 @@ use File::Find::Object; # we're only wrapping for now
 use File::Basename;
 use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
 
-$VERSION = '0.0100';
+$VERSION = '0.0101';
 
 # we'd just inherit from Exporter, but I want the colon
 sub import {
