@@ -1,6 +1,8 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+    - fixed the dependencies in Build.PL (especially File::Find::Object)
+
 0.0100      Wed Feb 18 17:09:01 IST 2009
     - first release on CPAN - a direct port of File-Find-Rule-0.30
     to File::Find::Object.
