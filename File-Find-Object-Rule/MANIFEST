@@ -1,6 +1,5 @@
 Build.PL
 Changes
-findrule
 inc/Test/Run/Builder.pm
 lib/File/Find/Object/Rule/Extending.pod
 lib/File/Find/Object/Rule.pm
@@ -9,6 +8,7 @@ Makefile.PL
 MANIFEST
 META.yml
 README
+scripts/findorule
 t/File-Find-Rule.t
 t/findrule.t
 t/foobar

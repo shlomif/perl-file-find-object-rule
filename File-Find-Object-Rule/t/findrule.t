@@ -1,12 +1,20 @@
-#!perl -w
+#!perl
+
 use strict;
+use warnings;
+
 use Test::More tests => 6;
+use File::Spec;
 
 # extra tests for findrule.  these are more for testing the parsing code.
 
 sub run ($) {
     my $expr = shift;
-    [ sort split /\n/, `$^X -Mblib findrule $expr 2>&1` ];
+    my $script = File::Spec->catfile(
+        File::Spec->curdir(), "scripts", "findorule"
+    );
+
+    [ sort split /\n/, `$^X -Mblib $script $expr 2>&1` ];
 }
 
 is_deeply(run 't -file -name foobar', [ 't/foobar' ],

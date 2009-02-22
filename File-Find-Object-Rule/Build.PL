@@ -12,7 +12,7 @@ use Test::Run::Builder;
 my $build = Test::Run::Builder->new(
     module_name => "File::Find::Object::Rule",
     license     => 'perl',
-    script_files => [ 'findrule' ],
+    script_files => [ 'scripts/findorule' ],
     requires    => {
         'Carp'               => 0,
         'Cwd'                => 0,
