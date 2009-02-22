@@ -5,7 +5,7 @@ use strict;
 use Test::More tests => 41;
 
 my $class;
-my @tests = qw( t/File-Find-Rule.t t/findrule.t );
+my @tests = qw( t/File-Find-Rule.t t/findorule.t );
 BEGIN {
     $class = 'File::Find::Object::Rule';
     use_ok($class)
@@ -117,7 +117,7 @@ $f = $class
   ->file
   ->not( $class->name( qr/^[^.]{1,8}(\.[^.]{0,3})?$/ ) )
   ->maxdepth(1)
-  ->exec(sub { length == 6 || length > 10 });
+  ->exec(sub { length == 6 || length > 11 });
 is_deeply( [ $f->in('t') ],
            [ 't/File-Find-Rule.t' ],
            "not" );
@@ -127,7 +127,7 @@ $f = $class
   ->file
   ->not_name( qr/^[^.]{1,8}(\.[^.]{0,3})?$/ )
   ->maxdepth(1)
-  ->exec(sub { length == 6 || length > 10 });
+  ->exec(sub { length == 6 || length > 11 });
 is_deeply( [ $f->in('t') ],
            [ 't/File-Find-Rule.t' ],
            "not_*" );
@@ -272,7 +272,7 @@ is_deeply( [ sort @found ], [ 't', @tests, 't/foobar', @ateam_path ], "iterator"
 }
 
 # negating in the procedural interface
-is_deeply( [ find( file => '!name' => qr/^[^.]{1,8}(\.[^.]{0,3})?$/,
+is_deeply( [ find( file => '!name' => qr/^[^.]{1,9}(\.[^.]{0,3})?$/,
                    maxdepth => 1,
                    in => 't' ) ],
            [ 't/File-Find-Rule.t' ],

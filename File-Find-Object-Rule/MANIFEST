@@ -10,6 +10,6 @@ META.yml
 README
 scripts/findorule
 t/File-Find-Rule.t
-t/findrule.t
+t/findorule.t
 t/foobar
 t/lib/File/Find/Object/Rule/Test/ATeam.pm

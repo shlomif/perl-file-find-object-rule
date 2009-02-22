@@ -6,7 +6,7 @@ use warnings;
 use Test::More tests => 6;
 use File::Spec;
 
-# extra tests for findrule.  these are more for testing the parsing code.
+# extra tests for findorule.  these are more for testing the parsing code.
 
 sub run ($) {
     my $expr = shift;
@@ -29,7 +29,7 @@ is_deeply(run 't -maxdepth 0 -directory',
       if ($^O =~ m/Win32/ || $^O eq 'dos');
 
     is_deeply(run 't -file -name \( foobar \*.t \)',
-              [ qw( t/File-Find-Rule.t t/findrule.t t/foobar ) ],
+              [ qw( t/File-Find-Rule.t t/findorule.t t/foobar ) ],
               'grouping ()');
 
     is_deeply(run 't -name \( -foo foobar \)',
