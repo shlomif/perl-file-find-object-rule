@@ -1,6 +1,19 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+    - hopefully got rid of all UNIXisms (and incompatibilities with Win32), and 
+    problems such as running when having temporary files (*~) in the test 
+    files:
+        - now holding a pristine copy of the test tree under
+            ./t/sample-data/to-copy-from/
+        and copying it and processing it using File::Find::Object::TreeCreate
+        which was borrowed from the File::Find::Object code.
+        - Converted all the paths constant to variables, which are generated
+        using $tree_creator->get_path().
+        - Removed some non-portable assertions or ones that are hard to 
+        reproduce with File::Spec.
+        - Added Test::Count annotations to the tests' code.
+
 0.0101      Sun Feb 22 14:29:06 IST 2009
     - fixed the dependencies in Build.PL (especially File::Find::Object)
     - moved findrule to scripts/findorule
