@@ -134,6 +134,10 @@ sub _force_object {
 
 =back
 
+=head2 finder
+
+The L<File::Find::Object> finder instance itself.
+
 =head2 Matching Rules
 
 =over
@@ -772,7 +776,173 @@ documented in L<File::Find::Object::Rule::Procedural>
 
 =head1 EXPORTS
 
-L</find>, L</rule>
+=head2 find
+
+=head2 rule
+
+=head1 Tests
+
+=head2 accessed
+
+Corresponds to C<-A>.
+
+=head2 ascii
+
+Corresponds to C<-T>.
+
+=head2 atime
+
+See "stat tests".
+
+=head2 binary
+
+Corresponds to C<-b>.
+
+=head2 blksize
+
+See "stat tests".
+
+=head2 block
+
+Corresponds to C<-b>.
+
+=head2 blocks
+
+See "stat tests".
+
+=head2 changed
+
+Corresponds to C<-C>.
+
+=head2 character
+
+Corresponds to C<-c>.
+
+=head2 ctime
+
+See "stat tests".
+
+=head2 dev
+
+See "stat tests".
+
+=head2 directory
+
+Corresponds to C<-d>.
+
+=head2 empty
+
+Corresponds to C<-z>.
+
+=head2 executable
+
+Corresponds to C<-x>.
+
+=head2 exists
+
+Corresponds to C<-e>.
+
+=head2 fifo
+
+Corresponds to C<-p>.
+
+=head2 file
+
+Corresponds to C<-f>.
+
+=head2 gid
+
+See "stat tests".
+
+=head2 ino
+
+See "stat tests".
+
+=head2 mode
+
+See "stat tests".
+
+=head2 modified
+
+Corresponds to C<-M>.
+
+=head2 mtime
+
+See "stat tests".
+
+=head2 nlink
+
+See "stat tests".
+
+=head2 r_executable
+
+Corresponds to C<-X>.
+
+=head2 r_owned
+
+Corresponds to C<-O>.
+
+=head2 nonempty
+
+A predicate that determines if the file is empty. Uses C<-s>.
+
+=head2 owned
+
+Corresponds to C<-o>.
+
+=head2 r_readable
+
+Corresponds to C<-R>.
+
+=head2 r_writeable
+
+=head2 r_writable
+
+Corresponds to C<-W>.
+
+=head2 rdev
+
+See "stat tests".
+
+=head2 readable
+
+Corresponds to C<-r>.
+
+=head2 setgid
+
+Corresponds to C<-g>.
+
+=head2 setuid
+
+Corresponds to C<-u>.
+
+=head2 size
+
+See stat tests.
+
+=head2 socket
+
+Corresponds to C<-S>.
+
+=head2 sticky
+
+Corresponds to C<-k>.
+
+=head2 symlink
+
+Corresponds to C<-l>.
+
+=head2 uid 
+
+See "stat tests".
+
+=head2 tty
+
+Corresponds to C<-t>.
+
+=head2 writable()
+
+Corresponds to C<-w>.
 
 =head1 BUGS
 
