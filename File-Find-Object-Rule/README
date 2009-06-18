@@ -1,22 +1,22 @@
-README for File::Find::Rule 0.30
+README for File::Find::Object::Rule
 
 =head1 NAME
 
-File::Find::Rule - Alternative interface to File::Find
+File::Find::Object::Rule - Alternative interface to File::Find::Object
 
 =head1 SYNOPSIS
 
-  use File::Find::Rule;
+  use File::Find::Object::Rule;
   # find all the subdirectories of a given directory
-  my @subdirs = File::Find::Rule->directory->in( $directory );
+  my @subdirs = File::Find::Object::Rule->directory->in( $directory );
 
   # find all the .pm files in @INC
-  my @files = File::Find::Rule->file()
+  my @files = File::Find::Object::Rule->file()
                               ->name( '*.pm' )
                               ->in( @INC );
 
   # as above, but without method chaining
-  my $rule =  File::Find::Rule->new;
+  my $rule =  File::Find::Object::Rule->new;
   $rule->file;
   $rule->name( '*.pm' );
   my @files = $rule->in( @INC );
@@ -27,7 +27,7 @@ File::Find::Rule - Alternative interface to File::Find
 This module has external dependencies on the following modules:
 
  Cwd
- File::Find
+ File::Find::Object
  File::Spec
  Number::Compare
  Test::More
@@ -42,38 +42,20 @@ and if all goes well
 
  perl Build install
 
-=head1 HISTORY
-
-What changed over the last 3 revisions
-
-=over
-
-=item 0.30 Wednesday 1st June, 2006
-
-	Made './//././././///.//././/////./blah' be treated the same 
-        as './blah' (it gets turned into 'blah')
-
-
-=item 0.29 Tuesday 16th May, 2006
-
-	Kludged around {min,max}depth and trailing slashes in path
-	names.
-
-
-=item 0.28 Tuesday 18th May, 2004
-
-	exposed %X_tests and @stat_tests as package variables, and make a
-	_call_find method for File::Find::Rule::Filesys::Virtual
-
-=back
-
 =head1 AUTHOR
+
+=head2 File::Find::Rule
 
 Richard Clamp <richardc@unixbeard.net> with input gained from this
 use.perl discussion: http://use.perl.org/~richardc/journal/6467
 
 Additional proofreading and input provided by Kake, Greg McCarroll,
 and Andy Lester andy@petdance.com.
+
+=head2 File::Find::Object::Rule
+
+Shlomi Fish converted the code to use L<File::Find::Object> instead. All
+copyrights disclaimed.
 
 =head1 COPYRIGHT
 
@@ -84,9 +66,10 @@ under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<File::Find>, L<Text::Glob>, L<Number::Compare>, find(1)
+L<File::Find::Object>, L<Text::Glob>, L<Number::Compare>, 
+L<File::Find::Object::Rule>, find(1)
 
 If you want to know about the procedural interface, see
-L<File::Find::Rule::Procedural>, and if you have an idea for a neat
-extension L<File::Find::Rule::Extending>
+L<File::Find::Object::Rule::Procedural>, and if you have an idea for a neat
+extension L<File::Find::Object::Rule::Extending>
 
