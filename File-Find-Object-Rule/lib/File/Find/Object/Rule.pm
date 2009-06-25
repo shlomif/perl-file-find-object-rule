@@ -18,6 +18,7 @@ $VERSION = '0.0200';
 
 use Class::XSAccessor
     accessors => {
+        "finder" => "finder",
         "_match_cb" => "_match_cb",
         "_subs" => "_subs",
     }
@@ -565,15 +566,9 @@ sub _call_find {
 
     my $finder = File::Find::Object->new( $params, @paths);
 
-    $self->{finder} = $finder;
+    $self->finder($finder);
 
     return;
-}
-
-sub finder {
-    my $self = shift;
-
-    return $self->{finder};
 }
 
 sub _compile {
