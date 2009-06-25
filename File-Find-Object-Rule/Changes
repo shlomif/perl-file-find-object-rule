@@ -1,6 +1,18 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+0.0300      Fri Jun 26 01:12:27 IDT 2009
+    - Adapted the README to File-Find-Object-Rule.
+    - Added POD tests and got to full POD coverage.
+    - Converted many direct $self->{$field} accesses to Class::XSAccessor
+    accessors.
+    - Now ->start() and ->match() are iteration-enabled.
+        - ->start() no longer calls ->in() but the other way around, making
+        use of File::Find::Object's power.
+    - Added resources and keywords information to the Build.PL
+    - Updated lib/File/Find/Object/Rule/Extending.pod for
+    File-Find-Object-Rule .
+
 0.0200      Sun Mar  1 22:24:21 IST 2009
     - hopefully got rid of all UNIXisms (and incompatibilities with Win32), and 
     problems such as running when having temporary files (*~) in the test 

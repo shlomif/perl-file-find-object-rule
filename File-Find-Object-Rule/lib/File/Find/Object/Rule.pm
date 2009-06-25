@@ -14,7 +14,7 @@ use File::Find::Object; # we're only wrapping for now
 use File::Basename;
 use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
 
-$VERSION = '0.0200';
+$VERSION = '0.0300';
 
 use Class::XSAccessor
     accessors => {
