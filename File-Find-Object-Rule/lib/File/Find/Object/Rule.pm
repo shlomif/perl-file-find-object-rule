@@ -20,6 +20,7 @@ use Class::XSAccessor
     accessors => {
         "finder" => "finder",
         "_match_cb" => "_match_cb",
+        "rules" => "rules",
         "_subs" => "_subs",
     }
     ;
@@ -153,6 +154,10 @@ sub _force_object {
 
 The L<File::Find::Object> finder instance itself.
 
+=head2 my @rules = @{$ffor->rules()};
+
+The rules to match against. For internal use only.
+
 =head2 Matching Rules
 
 =over
@@ -177,15 +182,26 @@ sub _flatten {
     return @flat;
 }
 
+sub _add_rule {
+    my $self = shift;
+    my $new_rule = shift;
+
+    push @{$self->rules()}, $new_rule;
+
+    return;
+}
+
 sub name {
     my $self = _force_object shift;
     my @names = map { ref $_ eq "Regexp" ? $_ : glob_to_regex $_ } _flatten( @_ );
 
-    push @{ $self->{rules} }, {
-        rule => 'name',
-        code => join( ' || ', map { "m($_)" } @names ),
-        args => \@_,
-    };
+    $self->_add_rule(
+        {
+            rule => 'name',
+            code => join( ' || ', map { "m($_)" } @names ),
+            args => \@_,
+        }
+    );
 
     $self;
 }
@@ -248,10 +264,10 @@ use vars qw( %X_tests );
 for my $test (keys %X_tests) {
     my $sub = eval 'sub () {
         my $self = _force_object shift;
-        push @{ $self->{rules} }, {
+        $self->_add_rule({
             code => "' . $test . ' \$path",
             rule => "'.$X_tests{$test}.'",
-        };
+        });
         $self;
     } ';
     no strict 'refs';
@@ -289,12 +305,12 @@ use vars qw( @stat_tests );
 
             my @tests = map { Number::Compare->parse_to_perl($_) } @_;
 
-            push @{ $self->{rules} }, {
+            $self->_add_rule({
                 rule => $test,
                 args => \@_,
                 code => 'do { my $val = (stat $path)['.$index.'] || 0;'.
                   join ('||', map { "(\$val $_)" } @tests ).' }',
-            };
+            });
             $self;
         };
         no strict 'refs';
@@ -322,13 +338,13 @@ sub any {
     my $self = _force_object shift;
     my @rulesets = @_;
 
-    push @{ $self->{rules} }, {
+    $self->_add_rule({
         rule => 'any',
         code => '(' . join( ' || ', map {
             "( " . $_->_compile($self->_subs()) . " )"
         } @_ ) . ")",
         args => \@_,
-    };
+    });
     $self;
 }
 
@@ -351,13 +367,13 @@ sub not {
     my $self = _force_object shift;
     my @rulesets = @_;
 
-    push @{ $self->{rules} }, {
+    $self->_add_rule({
         rule => 'not',
         args => \@rulesets,
         code => '(' . join ( ' && ', map {
             "!(". $_->_compile($self->_subs()) . ")"
         } @_ ) . ")",
-    };
+    });
     $self;
 }
 
@@ -372,12 +388,14 @@ Traverse no further.  This rule always matches.
 sub prune () {
     my $self = _force_object shift;
 
-    push @{ $self->{rules} },
-      {
-       rule => 'prune',
-       code => 'do { $self->finder->prune(); 1 }'
-      };
-    $self;
+    $self->_add_rule(
+        {
+            rule => 'prune',
+            code => 'do { $self->finder->prune(); 1 }'
+        },
+    );
+
+    return $self;
 }
 
 =item C<discard>
@@ -389,11 +407,12 @@ Don't keep this file.  This rule always matches.
 sub discard () {
     my $self = _force_object shift;
 
-    push @{ $self->{rules} }, {
+    $self->_add_rule({
         rule => 'discard',
         code => '$discarded = 1',
-    };
-    $self;
+    });
+
+    return $self;
 }
 
 =item C<exec( \&subroutine( $shortname, $path, $fullname ) )>
@@ -413,11 +432,14 @@ sub exec {
     my $self = _force_object shift;
     my $code = shift;
 
-    push @{ $self->{rules} }, {
-        rule => 'exec',
-        code => $code,
-    };
-    $self;
+    $self->_add_rule(
+        {
+            rule => 'exec',
+            code => $code,
+        }
+    );
+
+    return $self;
 }
 
 =item ->grep( @specifiers );
@@ -575,7 +597,7 @@ sub _compile {
     my $self = shift;
     my $subs = shift;
 
-    return '1' unless @{ $self->{rules} };
+    return '1' unless @{ $self->rules() };
 
     my $code = join " && ", map {
         if (ref $_->{code}) {
@@ -585,7 +607,7 @@ sub _compile {
         else {
             "( $_->{code} ) # $_->{rule}\n";
         }
-    } @{ $self->{rules} };
+    } @{ $self->rules() };
 
     return $code;
 }
