@@ -24,6 +24,8 @@ use Class::XSAccessor
         "rules" => "rules",
         "_relative" => "_relative",
         "_subs" => "_subs",
+        "_maxdepth" => "_maxdepth",
+        "_mindepth" => "_mindepth",
     }
     ;
 
@@ -135,8 +137,8 @@ sub new {
         _subs     => [],  # [1]
         iterator => [],
         extras   => {},
-        maxdepth => undef,
-        mindepth => undef,
+        _maxdepth => undef,
+        _mindepth => undef,
         _relative => 0,
     }, $class;
 }
@@ -518,16 +520,17 @@ used.
 
 =cut
 
-for my $setter (qw( maxdepth mindepth )) {
-    my $sub = sub {
-        my $self = _force_object shift;
-        $self->{$setter} = shift;
-        $self;
-    };
-    no strict 'refs';
-    *$setter = $sub;
+sub maxdepth {
+    my $self = _force_object shift;
+    $self->_maxdepth(shift);
+    return $self;
 }
 
+sub mindepth {
+    my $self = _force_object shift;
+    $self->_mindepth(shift);
+    return $self;
+}
 
 =item C<relative>
 
@@ -669,8 +672,8 @@ sub start {
         my $path_base = fileparse($path);
         my @args = ($path_base, $path_dir, $path);
         local $_ = $path_base;
-        my $maxdepth = $self->{maxdepth};
-        my $mindepth = $self->{mindepth};
+        my $maxdepth = $self->_maxdepth;
+        my $mindepth = $self->_mindepth;
 
         my $comps = $path_obj->full_components();
 
