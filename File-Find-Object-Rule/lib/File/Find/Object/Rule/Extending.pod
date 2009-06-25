@@ -4,44 +4,46 @@ File::Find::Object::Rule::Extending - the mini-guide to extending File::Find::Ob
 
 =head1 SYNOPSIS
 
- package File::Find::Object::Rule::Random;
- use strict;
- 
- # take useful things from File::Find::Object::Rule
- use base 'File::Find::Object::Rule';
+    package File::Find::Object::Rule::Random;
 
- # and force our crack into the main namespace
- sub File::Find::Object::Rule::random () {
-     my $self = shift()->_force_object;
-     $self->exec( sub { rand > 0.5 } );
- }
- 
- 1;
+    use strict;
+    use warnings;
+
+    # take useful things from File::Find::Object::Rule
+    use base 'File::Find::Object::Rule';
+
+    # and force our crack into the main namespace
+    sub File::Find::Object::Rule::random () {
+        my $self = shift()->_force_object;
+        $self->exec( sub { rand > 0.5 } );
+    }
+
+    1;
 
 =head1 DESCRIPTION
 
-File::Find::Object::Rule went down so well with the buying public that
-everyone wanted to add extra features.  With the 0.07 release this
-became a possibility, using the following conventions.
+L<File::Find::Object::Rule> inherits L<File::Find::Rule>'s extensibility. It
+is now possibile to extend it, using the following conventions.
 
 =head2 Declare your package
 
- package File::Find::Object::Rule::Random;
- use strict;
+    package File::Find::Object::Rule::Random;
+
+    use strict;
+    use warnings;
 
 =head2 Inherit methods from File::Find::Object::Rule
 
- # take useful things from File::Find::Object::Rule
- use base 'File::Find::Object::Rule';
+    # take useful things from File::Find::Object::Rule
+    use base 'File::Find::Object::Rule';
  
 =head3 Force your madness into the main package
 
- # and force our crack into the main namespace
- sub File::Find::Object::Rule::random () {
-     my $self = shift()->_force_object;
-     $self->exec( sub { rand > 0.5 } );
- }
- 
+    # and force our crack into the main namespace
+    sub File::Find::Object::Rule::random () {
+        my $self = shift()->_force_object;
+        $self->exec( sub { rand > 0.5 } );
+    }
 
 Yes, we're being very cavalier here and defining things into the main
 File::Find::Object::Rule namespace.  This is due to lack of imaginiation on my
@@ -66,6 +68,11 @@ If you hadn't declared C<random> with a null prototype it would have
 consumed C<in> as a parameter to it, then got all confused as it
 doesn't know about a C<'.'> rule.
 
+=head1 NOTES ABOUT THE CALLBACK
+
+The callback can access the L<File::Find::Object::Result> using
+C<<< $self->finder->item_obj() >>>.
+
 =head1 AUTHOR
 
 Richard Clamp <richardc@unixbeard.net>
@@ -81,11 +88,7 @@ under the same terms as Perl itself.
 
 L<File::Find::Object::Rule>
 
-L<File::Find::Object::Rule::MMagic> was the first extension module, so maybe
-check that out.
+L<File::Find::::Rule::MMagic> was the first extension module for
+L<File::Find::Rule>, so maybe check that out.
 
 =cut
-
-
-
-
