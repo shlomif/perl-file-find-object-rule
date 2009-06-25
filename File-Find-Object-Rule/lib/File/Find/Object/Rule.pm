@@ -22,6 +22,7 @@ use Class::XSAccessor
         "finder" => "finder",
         "_match_cb" => "_match_cb",
         "rules" => "rules",
+        "_relative" => "_relative",
         "_subs" => "_subs",
     }
     ;
@@ -136,7 +137,7 @@ sub new {
         extras   => {},
         maxdepth => undef,
         mindepth => undef,
-        relative => 0,
+        _relative => 0,
     }, $class;
 }
 
@@ -536,8 +537,9 @@ Trim the leading portion of any path found
 
 sub relative () {
     my $self = _force_object shift;
-    $self->{relative} = 1;
-    $self;
+    $self->_relative(1);
+
+    return $self;
 }
 
 =item C<not_*>
@@ -651,7 +653,7 @@ sub start {
     my $subs = $self->_subs();
 
     warn "relative mode handed multiple paths - that's a bit silly\n"
-      if $self->{relative} && @_ > 1;
+      if $self->_relative() && @paths > 1;
 
     my $code = 'sub {
         my $path_obj = shift;
@@ -714,7 +716,6 @@ sub match {
 
     my $match_cb = $self->_match_cb();
     my $preproc_cb = $self->extras()->{'preprocess'};
-    my $relative = $self->{relative};
 
     while(defined(my $next_obj = $finder->next_obj()))
     {
@@ -730,7 +731,7 @@ sub match {
 
         if (defined(my $path = $match_cb->($next_obj, $next_obj->path())))
         {
-            if ($relative)
+            if ($self->_relative)
             {
                 my $comps = $next_obj->full_components();
                 if (@$comps)
