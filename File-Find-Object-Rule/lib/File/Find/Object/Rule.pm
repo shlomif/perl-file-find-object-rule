@@ -564,7 +564,7 @@ sub in {
 
     my $fragment = $self->_compile($self->_subs());
 
-    my @subs = @{$self->_subs()};
+    my $subs = $self->_subs();
 
     warn "relative mode handed multiple paths - that's a bit silly\n"
       if $self->{relative} && @_ > 1;
@@ -681,7 +681,7 @@ sub _compile {
     my $code = join " && ", map {
         if (ref $_->{code}) {
             push @$subs, $_->{code};
-            "\$subs[$#{$subs}]->(\@args) # $_->{rule}\n";
+            "\$subs->[$#{$subs}]->(\@args) # $_->{rule}\n";
         }
         else {
             "( $_->{code} ) # $_->{rule}\n";
