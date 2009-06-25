@@ -30,6 +30,35 @@ my $build = Test::Run::Builder->new(
         'Test::More'      => 0,
     },
     create_makefile_pl => 'traditional',
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => "http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/",
+            homepage => "http://www.shlomifish.org/open-source/projects/File-Find-Object/",
+        },
+        keywords =>
+        [
+            "directories",
+            "directory",
+            "directory-traversal",
+            "directory-tree",
+            "file",
+            "file-find-rule",
+            "find",
+            "instance",
+            "instantiated",
+            "instantiation",
+            "interface",
+            "iterative",
+            "object",
+            "rule",
+            "traversal",
+            "tree",
+            "wrapper",
+        ],
+    },
+
    );
 
 $build->create_build_script;
