@@ -16,6 +16,12 @@ use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
 
 $VERSION = '0.0200';
 
+use Class::XSAccessor
+    accessors => {
+        "_subs" => "_subs",
+    }
+    ;
+
 # we'd just inherit from Exporter, but I want the colon
 sub import {
     my $pkg = shift;
@@ -88,7 +94,7 @@ sub find {
         }
         if ($not) {
             $not = 0;
-            @args = $object->new->$method(@args);
+            @args = ref($object)->new->$method(@args);
             $method = "not";
         }
 
@@ -112,11 +118,16 @@ object if called as class methods.
 =cut
 
 sub new {
+    # We need this to maintain compatibility with File-Find-Object.
+    # However, Randal Schwartz recommends against this practice in general:
+    # http://www.stonehenge.com/merlyn/UnixReview/col52.html
     my $referent = shift;
     my $class = ref $referent || $referent;
+
+    return 
     bless {
         rules    => [],  # [0]
-        subs     => [],  # [1]
+        _subs     => [],  # [1]
         iterator => [],
         extras   => {},
         maxdepth => undef,
@@ -127,9 +138,11 @@ sub new {
 
 sub _force_object {
     my $object = shift;
-    $object = $object->new()
-      unless ref $object;
-    $object;
+    if (! ref($object))
+    {
+        $object = $object->new();
+    }
+    return $object;
 }
 
 =back
@@ -310,7 +323,7 @@ sub any {
     push @{ $self->{rules} }, {
         rule => 'any',
         code => '(' . join( ' || ', map {
-            "( " . $_->_compile( $self->{subs} ) . " )"
+            "( " . $_->_compile($self->_subs()) . " )"
         } @_ ) . ")",
         args => \@_,
     };
@@ -340,7 +353,7 @@ sub not {
         rule => 'not',
         args => \@rulesets,
         code => '(' . join ( ' && ', map {
-            "!(". $_->_compile( $self->{subs} ) . ")"
+            "!(". $_->_compile($self->_subs()) . ")"
         } @_ ) . ")",
     };
     $self;
@@ -548,8 +561,10 @@ sub in {
     my $self = _force_object shift;
 
     my @found;
-    my $fragment = $self->_compile( $self->{subs} );
-    my @subs = @{ $self->{subs} };
+
+    my $fragment = $self->_compile($self->_subs());
+
+    my @subs = @{$self->_subs()};
 
     warn "relative mode handed multiple paths - that's a bit silly\n"
       if $self->{relative} && @_ > 1;
@@ -659,9 +674,10 @@ sub finder {
 
 sub _compile {
     my $self = shift;
-    my $subs = shift; # [1]
+    my $subs = shift;
 
     return '1' unless @{ $self->{rules} };
+
     my $code = join " && ", map {
         if (ref $_->{code}) {
             push @$subs, $_->{code};
