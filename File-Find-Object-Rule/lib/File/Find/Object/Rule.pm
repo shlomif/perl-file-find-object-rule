@@ -18,6 +18,7 @@ $VERSION = '0.0200';
 
 use Class::XSAccessor
     accessors => {
+        "_match_cb" => "_match_cb",
         "_subs" => "_subs",
     }
     ;
@@ -557,88 +558,6 @@ directories.
 =cut
 
 
-sub in {
-    my $self = _force_object shift;
-
-    my @found;
-
-    my $fragment = $self->_compile($self->_subs());
-
-    my $subs = $self->_subs();
-
-    warn "relative mode handed multiple paths - that's a bit silly\n"
-      if $self->{relative} && @_ > 1;
-
-    my $topdir;
-    my $code = 'sub {
-        my $path = shift;
-        my $path_obj = $self->finder->item_obj();
-        
-        if (!defined($path_obj))
-        {
-            return;
-        }
-
-        $path =~ s#^(?:\./+)+##;
-        my $path_dir = dirname($path);
-        my $path_base = fileparse($path);
-        my @args = ($path_base, $path_dir, $path);
-        local $_ = $path_base;
-        my $maxdepth = $self->{maxdepth};
-        my $mindepth = $self->{mindepth};
-        my $relative = $self->{relative};
-
-        my $comps = $path_obj->full_components();
-
-        my $depth = scalar(@$comps);
-
-        defined $maxdepth && $depth >= $maxdepth
-           and $self->finder->prune();
-
-        defined $mindepth && $depth < $mindepth
-           and return;
-
-        #print "Testing \'$_\'\n";
-
-        my $discarded;
-        return unless ' . $fragment . ';
-        return if $discarded;
-        if ($relative) {
-            if (@$comps)
-            {
-                push @found, 
-                    ($path_obj->is_dir()
-                        ? File::Spec->catdir(@$comps)
-                        : File::Spec->catfile(@$comps)
-                    )
-                    ;
-            }
-        }
-        else {
-            push @found, $path;
-        }
-    }';
-
-    #use Data::Dumper;
-    #print Dumper \@subs;
-    #warn "Compiled sub: '$code'\n";
-
-    my $sub = eval "$code" or die "compile error '$code' $@";
-    my $cwd = getcwd;
-    for my $path (@_) {
-        # $topdir is used for relative and maxdepth
-        $topdir = $path;
-        # slice off the trailing slash if there is one (the
-        # maxdepth/mindepth code is fussy)
-        $topdir =~ s{/?$}{}
-          unless $topdir eq '/';
-        $self->_call_find( { %{ $self->{extras} }, callback => $sub }, $path );
-    }
-    chdir $cwd;
-
-    return @found;
-}
-
 sub _call_find {
     my $self = shift;
     my $params = shift;
@@ -647,21 +566,6 @@ sub _call_find {
     my $finder = File::Find::Object->new( $params, @paths);
 
     $self->{finder} = $finder;
-
-    while(defined(my $next = $finder->next()))
-    {
-        # Do nothing - the callback is invoked.
-
-        if (defined($params->{'preprocess'}) && $finder->item_obj->is_dir())
-        {
-            $finder->set_traverse_to(
-                $params->{'preprocess'}->(
-                        $self, 
-                        [ @{$finder->get_current_node_files_list()} ]
-                )
-            );
-        }
-    }
 
     return;
 }
@@ -691,6 +595,22 @@ sub _compile {
     return $code;
 }
 
+sub in {
+    my $self = _force_object shift;
+    my @paths = @_;
+
+    $self->start(@paths);
+
+    my @results;
+
+    while (defined(my $match = $self->match()))
+    {
+        push @results, $match;
+    }
+
+    return @results;
+}
+
 =item C<start( @directories )>
 
 Starts a find across the specified directories.  Matching items may
@@ -704,12 +624,65 @@ iterator.
 
 =cut
 
+
 sub start {
     my $self = _force_object shift;
+    my @paths = @_;
 
-    $self->{iterator} = [ $self->in( @_ ) ];
-    $self;
+    my $fragment = $self->_compile($self->_subs());
+
+    my $subs = $self->_subs();
+
+    warn "relative mode handed multiple paths - that's a bit silly\n"
+      if $self->{relative} && @_ > 1;
+
+    my $code = 'sub {
+        my $path_obj = shift;
+        my $path = shift;
+        
+        if (!defined($path_obj))
+        {
+            return;
+        }
+
+        $path =~ s#^(?:\./+)+##;
+        my $path_dir = dirname($path);
+        my $path_base = fileparse($path);
+        my @args = ($path_base, $path_dir, $path);
+        local $_ = $path_base;
+        my $maxdepth = $self->{maxdepth};
+        my $mindepth = $self->{mindepth};
+
+        my $comps = $path_obj->full_components();
+
+        my $depth = scalar(@$comps);
+
+        defined $maxdepth && $depth >= $maxdepth
+           and $self->finder->prune();
+
+        defined $mindepth && $depth < $mindepth
+           and return;
+
+        #print "Testing \'$_\'\n";
+
+        my $discarded;
+        return unless ' . $fragment . ';
+        return if $discarded;
+        return $path;
+    }';
+
+    #use Data::Dumper;
+    #print Dumper \@subs;
+    #warn "Compiled sub: '$code'\n";
+
+    my $callback = eval "$code" or die "compile error '$code' $@";
+
+    $self->_match_cb($callback);
+    $self->_call_find( $self->{extras}, @paths);
+
+    return 1;
 }
+
 
 =item C<match>
 
@@ -720,7 +693,48 @@ Returns the next file which matches, false if there are no more.
 sub match {
     my $self = _force_object shift;
 
-    return shift @{ $self->{iterator} };
+    my $finder = $self->finder();
+
+    my $match_cb = $self->_match_cb();
+    my $preproc_cb = $self->{'extras'}->{'preprocess'};
+    my $relative = $self->{relative};
+
+    while(defined(my $next_obj = $finder->next_obj()))
+    {
+        if (defined($preproc_cb) && $next_obj->is_dir())
+        {
+            $finder->set_traverse_to(
+                $preproc_cb->(
+                        $self, 
+                        [ @{$finder->get_current_node_files_list()} ]
+                )
+            );
+        }
+
+        if (defined(my $path = $match_cb->($next_obj, $next_obj->path())))
+        {
+            if ($relative)
+            {
+                my $comps = $next_obj->full_components();
+                if (@$comps)
+                {
+                    return
+                        ($next_obj->is_dir()
+                        ? File::Spec->catdir(@$comps)
+                        : File::Spec->catfile(@$comps)
+                        )
+                    ;
+                }
+            }
+            else
+            {
+                return $path;
+            }
+        }
+
+    }
+
+    return;
 }
 
 1;
