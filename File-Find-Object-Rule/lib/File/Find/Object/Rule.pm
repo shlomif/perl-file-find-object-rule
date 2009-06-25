@@ -18,6 +18,7 @@ $VERSION = '0.0200';
 
 use Class::XSAccessor
     accessors => {
+        "extras" => "extras",
         "finder" => "finder",
         "_match_cb" => "_match_cb",
         "rules" => "rules",
@@ -516,7 +517,7 @@ used.
 
 =cut
 
-for my $setter (qw( maxdepth mindepth extras )) {
+for my $setter (qw( maxdepth mindepth )) {
     my $sub = sub {
         my $self = _force_object shift;
         $self->{$setter} = shift;
@@ -583,10 +584,9 @@ directories.
 
 sub _call_find {
     my $self = shift;
-    my $params = shift;
-    my @paths = @_;
+    my $paths = shift;
 
-    my $finder = File::Find::Object->new( $params, @paths);
+    my $finder = File::Find::Object->new( $self->extras(), @$paths);
 
     $self->finder($finder);
 
@@ -695,7 +695,7 @@ sub start {
     my $callback = eval "$code" or die "compile error '$code' $@";
 
     $self->_match_cb($callback);
-    $self->_call_find( $self->{extras}, @paths);
+    $self->_call_find(\@paths);
 
     return 1;
 }
@@ -713,7 +713,7 @@ sub match {
     my $finder = $self->finder();
 
     my $match_cb = $self->_match_cb();
-    my $preproc_cb = $self->{'extras'}->{'preprocess'};
+    my $preproc_cb = $self->extras()->{'preprocess'};
     my $relative = $self->{relative};
 
     while(defined(my $next_obj = $finder->next_obj()))
