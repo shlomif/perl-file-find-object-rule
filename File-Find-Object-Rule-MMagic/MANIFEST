@@ -1,0 +1,9 @@
+Build.PL
+inc/Test/Run/Builder.pm
+lib/File/Find/Object/Rule/MMagic.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+t/File-Find-Object-Rule-MMagic.t
+t/happy-baby.JPG
+META.yml
