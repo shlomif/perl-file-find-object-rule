@@ -8,7 +8,7 @@ use File::Find::Object::Rule;
 use base qw( File::Find::Object::Rule );
 use vars qw( $VERSION @EXPORT );
 @EXPORT  = @File::Find::Object::Rule::EXPORT;
-$VERSION = '0.02';
+$VERSION = '0.0.1';
 
 use File::MMagic;
 use Text::Glob qw(glob_to_regex);
@@ -33,18 +33,19 @@ __END__
 
 =head1 NAME
 
-File::Find::Rule::MMagic - rule to match on mime types
+File::Find::Object::Rule::MMagic - rule to match on mime types
 
 =head1 SYNOPSIS
 
- use File::Find::Rule::MMagic;
+ use File::Find::Object::Rule::MMagic;
  my @images = find( file => magic => 'image/*', in => '.' );
 
 =head1 DESCRIPTION
 
-File::Find::Rule::MMagic interfaces File::MMagic to File::Find::Rule
-enabling you to find files based upon their mime type.  Text::Glob
-is used so that the patter may be a simple globbing pattern.
+File::Find::Object::Rule::MMagic interfaces L<File::MMagic> to 
+L<File::Find::Object::Rule> enabling you to find files based upon their mime 
+type.  L<Text::Glob> is used so that the pattern may be a simple globbing 
+pattern.
 
 =head2 ->magic( @patterns )
 
