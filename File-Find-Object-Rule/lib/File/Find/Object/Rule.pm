@@ -421,9 +421,11 @@ sub discard () {
 
 =item C<exec( \&subroutine( $shortname, $path, $fullname ) )>
 
-Allows user-defined rules.  Your subroutine will be invoked with C<$_>
-set to the current short name, and with parameters of the name, the
-path you're in, and the full relative filename.
+Allows user-defined rules.  Your subroutine will be invoked with parameters of 
+the name, the path you're in, and the full relative filename.
+In addition, C<$_> is set to the current short name, but its use is
+discouraged since as opposed to File::Find::Rule, File::Find::Object::Rule
+does not cd to the containing directory.
 
 Return a true value if your rule matched.
 
