@@ -1,6 +1,6 @@
 Revision history for File::Find::Object::Rule::VCS
 
-0.0.1
+0.0.1   Fri Dec 11 17:31:38 IST 2009
     - Converted File-Find-Object-Rule-1.07 to this distribution.
 
 Revision history for Perl extension File::Find::Rule::VCS
