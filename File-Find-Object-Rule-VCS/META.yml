@@ -1,0 +1,39 @@
+---
+name: File-Find-Object-Rule-VCS
+version: 1.07
+author:
+  - 'Shlomi Fish <shlomif@cpan.org>'
+abstract: "Exclude files/directories for Version Control \r\nSystems"
+license: perl
+resources:
+  homepage: http://www.shlomifish.org/open-source/projects/File-Find-Object/
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/
+requires:
+  File::Find::Object::Rule: 0
+  strict: 0
+  warnings: 0
+configure_requires:
+  Module::Build: 0.35
+provides:
+  File::Find::Object::Rule::VCS:
+    file: lib/File/Find/Object/Rule/VCS.pm
+generated_by: Module::Build version 0.35
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+keywords:
+  - bzr
+  - cvs
+  - file-find-object-rule
+  - file-find-rule
+  - find
+  - git
+  - mercurial
+  - mmagic
+  - object
+  - revision control
+  - subversion
+  - types
+  - vcs
+  - version control
