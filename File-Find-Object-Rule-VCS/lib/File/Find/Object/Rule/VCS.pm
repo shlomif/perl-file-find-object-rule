@@ -67,6 +67,8 @@ use File::Find::Object::Rule ();
 
 use vars qw{$VERSION @ISA @EXPORT};
 
+$VERSION = '0.0.1';
+
 use base 'File::Find::Object::Rule';
 
 my $FFOR = 'File::Find::Object::Rule';
