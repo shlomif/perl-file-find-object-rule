@@ -1,5 +1,6 @@
 Revision history for File::Find::Object::Rule::VCS
 
+0.0.2   Thu Dec 31 12:24:59 IST 2009
     - Add Text::Glob to the dependencies.
 
 0.0.1   Fri Dec 11 17:31:38 IST 2009

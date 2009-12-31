@@ -67,7 +67,7 @@ use File::Find::Object::Rule ();
 
 use vars qw{$VERSION @ISA @EXPORT};
 
-$VERSION = '0.0.1';
+$VERSION = '0.0.2';
 
 use base 'File::Find::Object::Rule';
 
