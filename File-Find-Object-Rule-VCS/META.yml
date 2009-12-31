@@ -1,30 +1,10 @@
 ---
-name: File-Find-Object-Rule-VCS
-version: v0.0.1
+abstract: "Exclude files/directories for Version Control \nSystems"
 author:
   - 'Shlomi Fish <shlomif@cpan.org>'
-abstract: |-
-  Exclude files/directories for Version Control 
-  Systems
-license: perl
-resources:
-  homepage: http://www.shlomifish.org/open-source/projects/File-Find-Object/
-  license: http://dev.perl.org/licenses/
-  repository: http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/
-requires:
-  File::Find::Object::Rule: 0
-  strict: 0
-  warnings: 0
 configure_requires:
-  Module::Build: 0.35
-provides:
-  File::Find::Object::Rule::VCS:
-    file: lib/File/Find/Object/Rule/VCS.pm
-    version: v0.0.1
-generated_by: Module::Build version 0.35
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3601'
 keywords:
   - bzr
   - cvs
@@ -35,8 +15,30 @@ keywords:
   - mercurial
   - mmagic
   - object
-  - revision control
+  - 'revision control'
   - subversion
   - types
   - vcs
-  - version control
+  - 'version control'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: File-Find-Object-Rule-VCS
+provides:
+  File::Find::Object::Rule::VCS:
+    file: lib/File/Find/Object/Rule/VCS.pm
+    version: v0.0.1
+requires:
+  Carp: 0
+  File::Find::Object::Rule: 0
+  Text::Glob: 0
+  base: 0
+  strict: 0
+  vars: 0
+  warnings: 0
+resources:
+  homepage: http://www.shlomifish.org/open-source/projects/File-Find-Object/
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/
+version: v0.0.1

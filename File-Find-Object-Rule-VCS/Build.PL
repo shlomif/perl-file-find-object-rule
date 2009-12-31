@@ -15,11 +15,16 @@ my $build = Test::Run::Builder->new(
     dist_author => 'Shlomi Fish <shlomif@cpan.org>',
     requires =>
     {
-        'strict' => 0,
-        'warnings'           => 0,
+        'base' => 0,
+        'Carp' => 0,
         'File::Find::Object::Rule' => 0,
+        'strict' => 0,
+        'Text::Glob' => 0,
+        'vars' => 0,
+        'warnings' => 0,
     },
-    test_requires    => {
+    test_requires =>
+    {
         'File::Spec' => 0.82,
         'Test::More' => 0.47,
     },
