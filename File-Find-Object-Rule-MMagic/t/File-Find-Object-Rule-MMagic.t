@@ -6,6 +6,9 @@ use warnings;
 use Test::More tests => 1;
 
 use File::Find::Object::Rule::MMagic;
+use File::Spec;
+
 # TEST
 is_deeply( [ find( magic => 'image/*', maxdepth => 2, in => 't' ) ],
-           [ 't/happy-baby.JPG' ] );
+           [ File::Spec->catfile(File::Spec->curdir(), "t", "happy-baby.JPG")]
+           );
