@@ -1,3 +1,8 @@
+INCLUDE(FindPkgConfig)
+MACRO(CHOMP VAR)
+    STRING(REGEX REPLACE "[\r\n]+$" "" ${VAR} "${${VAR}}")
+ENDMACRO(CHOMP)
+
 SET(DEBUG "" CACHE BOOL "Add debugging information")
 # This is the equivalent to perform a "make dist"/"make distdir" etc.
 SET(CPACK_PACKAGE_NAME "libfilefind")
@@ -90,8 +95,6 @@ INCLUDE(CPack)
 include(CheckFunctionExists)
 INCLUDE(CheckCCompilerFlag)
 
-ADD_SUBDIRECTORY ("man")
-
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET (CFLAG_TO_CHECK "-Wall")
@@ -107,7 +110,11 @@ ENDIF (${DEBUG})
 # So it can find config.h
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 
-SET (FILEFIND_MODULES file_find.c)
+SET (FILEFIND_MODULES filefind.c)
+
+PKG_CHECK_MODULES (GLIB2   glib-2.0)
+
+ADD_DEFINITIONS(${GLIB2_CFLAGS})
 
 ADD_LIBRARY (libfilefind
     SHARED
@@ -137,18 +144,6 @@ SET_TARGET_PROPERTIES(libfilefind
     )
 
 TARGET_LINK_LIBRARIES (libfilefind pthread)
-
-ADD_EXECUTABLE (test_rwlock
-    test_rwlock.c
-)
-
-TARGET_LINK_LIBRARIES (test_rwlock libfilefind)
-
-ADD_EXECUTABLE (test_rwlock_2
-    test_rwlock_2.c
-)
-
-TARGET_LINK_LIBRARIES (test_rwlock_2 libfilefind)
 
 INSTALL(
     FILES
