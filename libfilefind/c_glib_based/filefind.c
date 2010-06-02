@@ -15,7 +15,7 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 
 /* (Modified by Shlomi Fish, while disclaiming all rights. */
 /*
- * =====================================================================================
+ * =========================================================================
  *
  *       Filename:  filefind.c
  *
@@ -27,11 +27,13 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
  *
  *         Author:  Shlomi Fish via Olivier Thauvin
  *
- * =====================================================================================
+ * =========================================================================
  */
 
 #include <glib.h>
 #include <glib/gstdio.h>
+
+#include "inline.h"
 
 enum
 {
@@ -101,3 +103,24 @@ static GPtrArray * path_component_traverse_to_copy(path_component_t * self)
 {
     return string_array_copy(self->traverse_to);
 }
+
+static GCC_INLINE dev_t path_component_get_dev(path_component_t * self)
+{
+    return self->stat_ret.st_dev;
+}
+
+static GCC_INLINE ino_t path_component_get_inode(path_component_t * self)
+{
+    return self->stat_ret.st_ino;
+}
+
+gboolean path_component_is_same_inode(path_component_t * self, mystat_t * st)
+{
+    return
+    (   
+           (path_component_get_dev(self) == st->st_dev)
+        && (path_component_get_inode(self) == st->st_ino)
+        && (path_component_get_inode(self) != 0)
+    );
+}
+
