@@ -66,7 +66,7 @@ struct path_component_struct
     gboolean open_dir_ret;
     mystat_t stat_ret;
     GPtrArray * traverse_to;
-    gint next_traverse_to;
+    gint next_traverse_to_idx;
     GTree * inodes;
 };
 
@@ -257,7 +257,7 @@ static status_t path_component_set_up_dir(
     {
         return FILEFIND_STATUS_OUT_OF_MEM;
     }
-    self->next_traverse_to = 0;
+    self->next_traverse_to_idx = 0;
     
     self->open_dir_ret = TRUE;
 
@@ -287,13 +287,16 @@ static const gchar * path_component_next_traverse_to(path_component_t * self)
 
     g_assert( self->traverse_to );
 
-    if (self->next_traverse_to == self->traverse_to->len)
+    if (self->next_traverse_to_idx == self->traverse_to->len)
     {
         return NULL;
     }
 
-    next_fn = (const gchar *)g_ptr_array_index(self->traverse_to, self->next_traverse_to);
-    self->next_traverse_to++;
+    next_fn = (const gchar *)g_ptr_array_index(
+        self->traverse_to,
+        self->next_traverse_to_idx
+        );
+    self->next_traverse_to_idx++;
 
     return next_fn;
 }
