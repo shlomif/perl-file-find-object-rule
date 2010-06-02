@@ -48,9 +48,17 @@ typedef struct _g_stat_struct mystat_t;
 typedef struct stat mystat_t;
 #endif
 
+typedef gint status_t;
+
+enum FILEFIND_STATUS
+{
+    FILEFIND_STATUS_OK = 0,
+    FILEFIND_STATUS_OUT_OF_MEM,
+};
+
 struct path_component_struct
 {
-    int actions[2];
+    gint actions[2];
     gchar * curr_file;
     GPtrArray * files;
     gchar * last_dir_scanned;
@@ -65,7 +73,7 @@ typedef struct path_component_struct path_component_t;
 static GPtrArray * string_array_copy(GPtrArray * arr)
 {
     GPtrArray * ret;
-    int i;
+    gint i;
     gchar * string_copy;
 
     ret = g_ptr_array_sized_new(arr->len);
@@ -79,12 +87,13 @@ static GPtrArray * string_array_copy(GPtrArray * arr)
         string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
         if (! string_copy)
         {
-            int prev_i;
+            gint prev_i;
             for (prev_i = 0 ; prev_i < i ; prev_i++)
             {
                 g_free(g_ptr_array_index(arr, prev_i));
             }
-            g_ptr_array_free(arr, FALSE);
+            /* We need to pass TRUE because we're actually free-ing all the memory. */
+            g_ptr_array_free(arr, TRUE);
 
             return NULL;
         }
@@ -92,6 +101,20 @@ static GPtrArray * string_array_copy(GPtrArray * arr)
     }
 
     return ret;
+}
+
+static void string_array_free(GPtrArray * arr)
+{
+    gint i;
+
+    for( i = 0 ; i < arr->len ; i++)
+    {
+        g_free(g_ptr_array_index(arr, i));
+    }
+
+    g_ptr_array_free(arr, TRUE);
+
+    return;
 }
 
 static GPtrArray * path_component_files_copy(path_component_t * self)
@@ -114,13 +137,127 @@ static GCC_INLINE ino_t path_component_get_inode(path_component_t * self)
     return self->stat_ret.st_ino;
 }
 
-gboolean path_component_is_same_inode(path_component_t * self, mystat_t * st)
+static gboolean path_component_is_same_inode(path_component_t * self, mystat_t * st)
 {
     return
-    (   
+    (
            (path_component_get_dev(self) == st->st_dev)
         && (path_component_get_inode(self) == st->st_ino)
         && (path_component_get_inode(self) != 0)
     );
+}
+
+static gboolean path_component_should_scan_dir(
+    path_component_t * self,
+    gchar * dir_str)
+{
+    if (! g_strcmp0(self->last_dir_scanned, dir_str))
+    {
+        return FALSE;
+    }
+    else
+    {
+        if (self->last_dir_scanned)
+        {
+            g_free(self->last_dir_scanned);
+        }
+        self->last_dir_scanned = g_strdup(dir_str);
+        return TRUE;
+    }
+}
+
+gint indirect_lexic_compare(
+    gconstpointer a,
+    gconstpointer b)
+{
+    return g_strcmp0((*(const gchar * *)a), (*(const gchar * *)b));
+}
+
+static status_t path_component_calc_dir_files(
+    path_component_t * self,
+    gchar * dir_str)
+{
+    GPtrArray * files;
+    GDir * handle;
+    GError * error;
+
+    files = g_ptr_array_new();
+
+    if (! files)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    handle = g_dir_open(dir_str, 0, &error);
+
+    if (! handle)
+    {
+        /* Handle this error gracefully. */
+        self->files = files;
+        return FILEFIND_STATUS_OK;
+    }
+    else
+    {
+        const gchar * filename;
+        gchar * fn_copy;
+        while ((filename = g_dir_read_name(handle)))
+        {
+            fn_copy = g_strdup(filename);
+            if (!fn_copy)
+            {
+                int prev_i;
+                for( prev_i = 0 ; prev_i < files->len ; prev_i++)
+                {
+                    g_free(g_ptr_array_index(files, prev_i));
+                }
+                g_ptr_array_free(files, TRUE);
+                return FILEFIND_STATUS_OUT_OF_MEM;
+            }
+            g_ptr_array_add(files, fn_copy);
+        }
+        
+        g_dir_close(handle);
+        
+        g_ptr_array_sort(files, indirect_lexic_compare);
+
+        self->files = files;
+
+        return FILEFIND_STATUS_OK;
+    }
+}
+
+static status_t path_component_set_up_dir(
+    path_component_t * self,
+    gchar * dir_str)
+{
+    status_t ret;
+
+    if (self->files)
+    {
+        string_array_free(self->files);
+        self->files = NULL;
+    }
+
+    ret = path_component_calc_dir_files(self, dir_str);
+
+    if (ret)
+    {
+        return ret;
+    }
+
+    if (self->traverse_to)
+    {
+        string_array_free (self->traverse_to);
+        self->traverse_to = NULL;
+    }
+
+    if (! (self->traverse_to = path_component_files_copy(self)))
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+    
+    self->open_dir_ret = TRUE;
+
+    return FILEFIND_STATUS_OK;
 }
 
