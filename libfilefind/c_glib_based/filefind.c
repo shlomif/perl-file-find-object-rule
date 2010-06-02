@@ -54,6 +54,7 @@ enum FILEFIND_STATUS
 {
     FILEFIND_STATUS_OK = 0,
     FILEFIND_STATUS_OUT_OF_MEM,
+    FILEFIND_STATUS_DONT_SCAN,
 };
 
 struct path_component_struct
@@ -259,5 +260,22 @@ static status_t path_component_set_up_dir(
     self->open_dir_ret = TRUE;
 
     return FILEFIND_STATUS_OK;
+}
+
+static status_t path_component_component_open_dir(
+        path_component_t * self,
+        gchar * dir_str)
+{
+    if (! path_component_should_scan_dir(self, dir_str))
+    {
+        return self->open_dir_ret
+            ? FILEFIND_STATUS_OK
+            : FILEFIND_STATUS_DONT_SCAN
+            ;
+    }
+    else
+    {
+        return path_component_set_up_dir(self, dir_str);
+    }
 }
 
