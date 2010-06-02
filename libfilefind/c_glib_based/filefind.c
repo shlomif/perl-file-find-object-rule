@@ -55,6 +55,7 @@ enum FILEFIND_STATUS
     FILEFIND_STATUS_OK = 0,
     FILEFIND_STATUS_OUT_OF_MEM,
     FILEFIND_STATUS_DONT_SCAN,
+    FILEFIND_STATUS_END,
 };
 
 struct file_finder_struct;
@@ -391,6 +392,65 @@ static status_t file_finder_fill_actions(
 );
 
 static status_t file_finder_open_dir(file_finder_t * top);
+static status_t file_finder_calc_curr_path(file_finder_t * top);
+static status_t file_finder_mystat(file_finder_t * top);
+static path_component_t * file_finder_current_father(file_finder_t * top);
+
+static status_t deep_path_move_next(
+    path_component_t * self, 
+    file_finder_t * top)
+{
+    path_component_t * current_father;
+    const gchar * next_fn;
+
+    current_father = file_finder_current_father(top);
+
+    next_fn = path_component_next_traverse_to(current_father);
+
+    if (! next_fn)
+    {
+        return FILEFIND_STATUS_END;
+    }
+
+    if (self->curr_file)
+    {
+        g_free(self->curr_file);
+        self->curr_file = NULL;
+    }
+
+    if (!(self->curr_file = g_strdup(next_fn)))
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    {
+        gchar * prev, * new_elem;
+        
+        prev = g_ptr_array_index(top->curr_comps, top->curr_comps->len-1);
+
+        if (prev)
+        {
+            g_free(prev);
+            g_ptr_array_index(top->curr_comps, top->curr_comps->len-1) = NULL;
+        }
+
+        new_elem = g_strdup(self->curr_file);
+
+        if (! new_elem)
+        {
+            return FILEFIND_STATUS_OUT_OF_MEM;
+        }
+        g_ptr_array_index(top->curr_comps, top->curr_comps->len-1) = new_elem; 
+    }
+
+    file_finder_calc_curr_path(top);
+
+    file_finder_fill_actions(top, self);
+
+    file_finder_mystat(top);
+
+    return FILEFIND_STATUS_OK;
+}
 
 static path_component_t * deep_path_new(
     file_finder_t * top,
@@ -408,6 +468,8 @@ static path_component_t * deep_path_new(
     {
         return NULL;
     }
+
+    self->move_next = deep_path_move_next;
 
     self->stat_ret = top->top_stat;
 
