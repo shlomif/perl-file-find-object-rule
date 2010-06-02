@@ -57,6 +57,8 @@ enum FILEFIND_STATUS
     FILEFIND_STATUS_DONT_SCAN,
 };
 
+struct file_finder_struct;
+
 struct path_component_struct
 {
     gint actions[2];
@@ -68,9 +70,22 @@ struct path_component_struct
     GPtrArray * traverse_to;
     gint next_traverse_to_idx;
     GTree * inodes;
+    status_t (*move_next)(
+        struct path_component_struct * self, 
+        struct file_finder_struct * top
+    );
 };
 
 typedef struct path_component_struct path_component_t;
+
+struct file_finder_struct
+{
+    mystat_t top_stat;
+    GPtrArray * dir_stack;
+    GPtrArray * curr_comps;
+};
+
+typedef struct file_finder_struct file_finder_t;
 
 static GPtrArray * string_array_copy(GPtrArray * arr)
 {
@@ -300,4 +315,146 @@ static const gchar * path_component_next_traverse_to(path_component_t * self)
 
     return next_fn;
 }
+
+typedef struct
+{
+    dev_t st_dev;
+    ino_t st_ino;
+} inode_data_t;
+
+static gboolean dup_inode_tree(
+        gpointer key,
+        gpointer value,
+        gpointer data
+        )
+{
+    GTree * new_tree = (GTree *)data;
+
+    /* TODO : add error control in case the allocations failed. */
+    g_tree_insert(new_tree, g_memdup(key, sizeof(inode_data_t)), g_memdup(value, sizeof(gint)));
+
+    return FALSE;
+}
+
+
+gint inode_tree_cmp(gconstpointer a_void, gconstpointer b_void)
+{
+    inode_data_t * a, * b;
+
+    a = (inode_data_t *)a_void;
+    b = (inode_data_t *)b_void;
+
+    if (a->st_dev < b->st_dev)
+    {
+        return -1;
+    }
+    else if (a->st_dev > b->st_dev)
+    {
+        return 1;
+    }
+    else
+    {
+        if (a->st_ino < b->st_ino)
+        {
+            return -1;
+        }
+        else if (a->st_ino > b->st_ino)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+
+static gint inode_tree_cmp_with_context(gconstpointer a_void, gconstpointer b_void, gpointer user_data)
+{
+    return inode_tree_cmp(a_void, b_void);
+}
+
+void inode_tree_destroy_key(gpointer data)
+{
+    g_free(data);
+}
+
+void inode_tree_destroy_val(gpointer data)
+{
+    g_free(data);
+}
+
+
+static status_t file_finder_fill_actions(
+    file_finder_t * top,
+    path_component_t * from
+);
+
+static status_t file_finder_open_dir(file_finder_t * top);
+
+static path_component_t * deep_path_new(
+    file_finder_t * top,
+    path_component_t * from
+)
+{
+    path_component_t * self;
+    GTree * find;
+    ino_t inode;
+    status_t status;
+
+    self = g_new0(path_component_t, 1);
+
+    if (! self)
+    {
+        return NULL;
+    }
+
+    self->stat_ret = top->top_stat;
+
+    find = g_tree_new_full(
+        inode_tree_cmp_with_context,
+        NULL,
+        inode_tree_destroy_key,
+        inode_tree_destroy_val
+    );
+
+    g_tree_foreach(from->inodes, dup_inode_tree, (gpointer)find);
+
+    if ((inode = path_component_get_inode(self)))
+    {
+        inode_data_t data;
+
+        data.st_ino = inode;
+        data.st_dev = path_component_get_dev(self);
+
+        g_tree_insert(
+            find,
+            g_memdup(&data, sizeof(data)), 
+            g_memdup(&(top->dir_stack->len), sizeof(top->dir_stack->len))
+        );
+    }
+
+    self->inodes = find;
+
+    self->last_dir_scanned = NULL;
+
+    file_finder_fill_actions(top, self);
+
+    g_ptr_array_add(top->curr_comps, g_strdup(""));
+
+    status = file_finder_open_dir(top);
+
+    if (! status)
+    {
+        return self;
+    }
+    else
+    {
+        g_tree_destroy(find);
+        g_free(self);
+
+        return NULL;
+    }
+}
+
 
