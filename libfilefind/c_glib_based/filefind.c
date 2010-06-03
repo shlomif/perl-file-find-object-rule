@@ -79,6 +79,10 @@ struct path_component_struct
 
 typedef struct path_component_struct path_component_t;
 
+typedef struct 
+{
+} item_result_t;
+
 struct file_finder_struct
 {
     mystat_t top_stat;
@@ -86,6 +90,26 @@ struct file_finder_struct
     /* TODO : make curr_comps with GDestroyNotify of g_free. */
     GPtrArray * curr_comps;
     dev_t dev;
+    path_component_t * current;
+    gchar * curr_path;
+    /* The default actions. */
+    gint def_actions[2];
+    item_result_t * item_obj;
+    int target_index;
+    GPtrArray * targets;
+    gboolean top_is_dir;
+    gboolean top_is_link;
+    void (*callback)(const char * filename, void * context);
+    void * callback_context;
+    /* This is ->depth() from File-Find-Object */
+    gboolean should_traverse_depth_first;
+    int (*filter_callback)(const char * filename, void * context);
+    void * filter_context;
+    /* This is 'followlink' from File-Find-Object. */
+    gboolean should_follow_link;
+
+    /* This is ->nocrossfs() from File-Find-Object. */
+    gboolean should_not_cross_fs; 
 };
 
 typedef struct file_finder_struct file_finder_t;
