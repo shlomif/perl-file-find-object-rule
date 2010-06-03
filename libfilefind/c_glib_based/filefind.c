@@ -83,6 +83,7 @@ struct file_finder_struct
 {
     mystat_t top_stat;
     GPtrArray * dir_stack;
+    /* TODO : make curr_comps with GDestroyNotify of g_free. */
     GPtrArray * curr_comps;
     dev_t dev;
 };
@@ -395,6 +396,7 @@ static status_t file_finder_fill_actions(
 static status_t file_finder_open_dir(file_finder_t * top);
 static gboolean file_finder_increment_target_index(file_finder_t * top);
 static status_t file_finder_calc_curr_path(file_finder_t * top);
+static gchar * file_finder_calc_next_target(file_finder_t * top);
 static status_t file_finder_mystat(file_finder_t * top);
 static path_component_t * file_finder_current_father(file_finder_t * top);
 
@@ -458,7 +460,50 @@ static status_t path_component_move_to_next_target(
     path_component_t * self,
     file_finder_t * top,
     const gchar * * next_target
-    );
+    )
+{
+    status_t status;
+    gchar * target, * target_copy;
+
+    *next_target = NULL;
+
+    target = file_finder_calc_next_target(top);
+
+    if (target == NULL)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    if (self->curr_file)
+    {
+        g_free(self->curr_file);
+        self->curr_file = NULL;
+    }
+
+    self->curr_file = target;
+
+    g_ptr_array_set_size(top->curr_comps, 0);
+
+    target_copy = g_strdup(target);
+
+    if (! target_copy)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    g_ptr_array_add (top->curr_comps, target_copy);
+
+    status = file_finder_calc_curr_path(top);
+
+    if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    *next_target = target;
+
+    return FILEFIND_STATUS_OK;
+}
 
 static status_t path_component_insert_inode_into_tree(
     path_component_t * self,
