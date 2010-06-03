@@ -667,8 +667,7 @@ static status_t top_path_move_next(
 }
 
 static path_component_t * top_path_new(
-    file_finder_t * top,
-    path_component_t * from
+    file_finder_t * top
 )
 {
     path_component_t * self;
@@ -693,3 +692,122 @@ static path_component_t * top_path_new(
 
     return self;
 }
+
+typedef struct 
+{
+    int stub;
+} file_find_handle_t;
+
+enum FILE_FIND_IFACE_STATUS
+{
+    FILE_FIND_OK = 0,
+    FILE_FIND_OUT_OF_MEMORY,
+};
+
+void destroy_string(gpointer data)
+{
+    g_free((gchar *)data);
+
+    return;
+}
+
+int file_find_new(file_find_handle_t * * output_handle, const char * first_target)
+{
+    file_finder_t * self = NULL;
+    path_component_t * top_path = NULL;
+
+    *output_handle = NULL;
+
+    if (! (self = g_new0(file_finder_t, 1)))
+    {
+        goto cleanup;
+    }
+
+    /*  
+     * The *existence* of an _st key inside the struct
+     * indicates that the stack is full.
+     * So now it's empty.
+     */
+
+    self->dir_stack = NULL;
+
+    if (! (self->dir_stack = g_ptr_array_new()))
+    {
+        goto cleanup;
+    }
+
+    if (! (self->curr_comps = g_ptr_array_new_with_free_func(destroy_string)))
+    {
+        goto cleanup;
+    }
+
+    if (! (self->targets = g_ptr_array_new_with_free_func(destroy_string)))
+    {
+        goto cleanup;
+    }
+
+    if (first_target)
+    {
+        gchar * target_copy;
+
+        target_copy = g_strdup(first_target);
+
+        if (! target_copy)
+        {
+            goto cleanup;
+        }
+
+        g_ptr_array_add(self->targets, target_copy);
+    }
+
+    self->target_index = -1;
+
+    {
+        top_path = top_path_new(self);
+
+        if (! top_path)
+        {
+            goto cleanup;
+        }
+
+        self->current = top_path;
+
+        g_ptr_array_add(self->dir_stack, top_path);
+    }
+
+    *output_handle = (file_find_handle_t *)self;
+
+    return FILE_FIND_OK;
+
+cleanup:
+    
+    if (top_path)
+    {
+        path_component_free(top_path);
+    }
+    if (self)
+    {
+        if (self->dir_stack)
+        {
+            g_ptr_array_free(self->dir_stack, 1);
+            self->dir_stack = NULL;
+        }
+
+        if (self->curr_comps)
+        {
+            g_ptr_array_free(self->dir_stack, 1);
+            self->curr_comps = NULL;
+        }
+
+        if (self->targets)
+        {
+            g_ptr_array_free(self->targets, 1);
+            self->targets = NULL;
+        }
+        
+        g_free(self);   
+    }
+
+    return FILE_FIND_OUT_OF_MEMORY;
+}
+
