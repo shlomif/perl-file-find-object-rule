@@ -84,6 +84,7 @@ struct file_finder_struct
     mystat_t top_stat;
     GPtrArray * dir_stack;
     GPtrArray * curr_comps;
+    dev_t dev;
 };
 
 typedef struct file_finder_struct file_finder_t;
@@ -392,6 +393,7 @@ static status_t file_finder_fill_actions(
 );
 
 static status_t file_finder_open_dir(file_finder_t * top);
+static gboolean file_finder_increment_target_index(file_finder_t * top);
 static status_t file_finder_calc_curr_path(file_finder_t * top);
 static status_t file_finder_mystat(file_finder_t * top);
 static path_component_t * file_finder_current_father(file_finder_t * top);
@@ -452,6 +454,35 @@ static status_t deep_path_move_next(
     return FILEFIND_STATUS_OK;
 }
 
+static status_t path_component_move_to_next_target(
+    path_component_t * self,
+    file_finder_t * top,
+    const gchar * * next_target
+    );
+
+static status_t path_component_insert_inode_into_tree(
+    path_component_t * self,
+    GTree * find, gint depth)
+{
+    ino_t inode;
+
+    if ((inode = path_component_get_inode(self)))
+    {
+        inode_data_t data;
+
+        data.st_ino = inode;
+        data.st_dev = path_component_get_dev(self);
+
+        g_tree_insert(
+            find,
+            g_memdup(&data, sizeof(data)), 
+            g_memdup(&depth, sizeof(depth))
+        );
+    }
+
+    return FILEFIND_STATUS_OK;
+}
+
 static path_component_t * deep_path_new(
     file_finder_t * top,
     path_component_t * from
@@ -459,7 +490,6 @@ static path_component_t * deep_path_new(
 {
     path_component_t * self;
     GTree * find;
-    ino_t inode;
     status_t status;
 
     self = g_new0(path_component_t, 1);
@@ -482,19 +512,7 @@ static path_component_t * deep_path_new(
 
     g_tree_foreach(from->inodes, dup_inode_tree, (gpointer)find);
 
-    if ((inode = path_component_get_inode(self)))
-    {
-        inode_data_t data;
-
-        data.st_ino = inode;
-        data.st_dev = path_component_get_dev(self);
-
-        g_tree_insert(
-            find,
-            g_memdup(&data, sizeof(data)), 
-            g_memdup(&(top->dir_stack->len), sizeof(top->dir_stack->len))
-        );
-    }
+    path_component_insert_inode_into_tree(self, find, top->dir_stack->len);
 
     self->inodes = find;
 
@@ -519,4 +537,90 @@ static path_component_t * deep_path_new(
     }
 }
 
+static status_t top_path_move_next(
+    path_component_t * self, 
+    file_finder_t * top)
+{
+    status_t status;
 
+    while (file_finder_increment_target_index(top))
+    {
+        const gchar * next_target;
+
+        /* next_target is a copy and should not be freed */
+        status = path_component_move_to_next_target(self, top, &next_target);
+
+        if (status == FILEFIND_STATUS_OUT_OF_MEM)
+        {
+            return FILEFIND_STATUS_OUT_OF_MEM;
+        }
+
+        if (g_file_test(next_target, G_FILE_TEST_EXISTS))
+        {
+            GTree * find;
+
+            if (file_finder_fill_actions(top, self)
+                    == FILEFIND_STATUS_OUT_OF_MEM)
+            {
+                return FILEFIND_STATUS_OUT_OF_MEM;
+            }
+
+            if (file_finder_mystat(top)
+                    == FILEFIND_STATUS_OUT_OF_MEM)
+            {
+                return FILEFIND_STATUS_OUT_OF_MEM;
+            }
+
+            self->stat_ret = top->top_stat;
+            top->dev = top->top_stat.st_dev;
+
+            find = g_tree_new_full(
+                inode_tree_cmp_with_context,
+                NULL,
+                inode_tree_destroy_key,
+                inode_tree_destroy_val
+            );
+
+            if (! find)
+            {
+                return FILEFIND_STATUS_OUT_OF_MEM;
+            }
+
+            path_component_insert_inode_into_tree(self, find, 0);
+
+            self->inodes = find;
+
+            return FILEFIND_STATUS_OK;
+        }
+    }
+
+    return FILEFIND_STATUS_END;
+}
+
+static path_component_t * top_path_new(
+    file_finder_t * top,
+    path_component_t * from
+)
+{
+    path_component_t * self;
+    status_t status;
+
+    self = g_new0(path_component_t, 1);
+
+    if (! self)
+    {
+        return NULL;
+    }
+
+    self->move_next = top_path_move_next;
+
+    status = file_finder_fill_actions(top, self);
+
+    if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        g_free(self);
+        return NULL;
+    }
+
+    return self;
+}
