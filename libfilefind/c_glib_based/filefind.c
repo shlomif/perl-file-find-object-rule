@@ -56,6 +56,7 @@ enum FILEFIND_STATUS
     FILEFIND_STATUS_OUT_OF_MEM,
     FILEFIND_STATUS_DONT_SCAN,
     FILEFIND_STATUS_END,
+    FILEFIND_STATUS_FALSE,
 };
 
 struct file_finder_struct;
@@ -747,6 +748,7 @@ enum FILE_FIND_IFACE_STATUS
 {
     FILE_FIND_OK = 0,
     FILE_FIND_OUT_OF_MEMORY,
+    FILE_FIND_END,
 };
 
 static void destroy_string(gpointer data)
@@ -1027,3 +1029,53 @@ cleanup:
     ret = NULL;
     return FILEFIND_STATUS_OUT_OF_MEM;
 }
+
+static status_t file_finder_process_current(file_finder_t * top);
+static status_t file_finder_master_move_to_next(file_finder_t * top);
+static status_t file_finder_me_die(file_finder_t * top);
+
+int file_find_next(file_find_handle_t * handle)
+{
+    file_finder_t * self;
+    status_t total_status, local_status;
+
+    self = (file_finder_t *)handle;
+
+    total_status = FILEFIND_STATUS_FALSE; 
+    while (! (total_status == FILEFIND_STATUS_OK))
+    {
+        total_status = file_finder_process_current(self);
+        if (total_status == FILEFIND_STATUS_OUT_OF_MEM)
+        {
+            goto cleanup;
+        }
+        else if (total_status == FILEFIND_STATUS_FALSE)
+        {
+            local_status = file_finder_master_move_to_next(self);
+            
+            if (local_status == FILEFIND_STATUS_OUT_OF_MEM)
+            {
+                goto cleanup;
+            }
+            else if (local_status == FILEFIND_STATUS_END)
+            {
+                total_status = FILEFIND_STATUS_OK;
+            }
+            else /* (local_status == FILEFIND_STATUS_OK) */
+            {
+                total_status = file_finder_me_die(self);
+
+                if (total_status == FILEFIND_STATUS_OUT_OF_MEM)
+                {
+                    goto cleanup;
+                }
+            }
+        }
+    }
+
+    return (self->item_obj ? FILE_FIND_OK : FILE_FIND_END);
+
+cleanup:
+    return FILE_FIND_OUT_OF_MEMORY;
+}
+
