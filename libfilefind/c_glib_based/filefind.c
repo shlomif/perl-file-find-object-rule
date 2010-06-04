@@ -79,8 +79,16 @@ struct path_component_struct
 
 typedef struct path_component_struct path_component_t;
 
-typedef struct 
+typedef struct
 {
+    gchar * path;
+    gchar * basename;
+    GPtrArray * dir_components;
+    gchar * base;
+    mystat_t stat_ret;
+    gboolean is_file;
+    gboolean is_dir;
+    gboolean is_link;
 } item_result_t;
 
 struct file_finder_struct
@@ -856,7 +864,7 @@ cleanup:
     return FILE_FIND_OUT_OF_MEMORY;
 }
 
-static GCC_INLINE file_finder_curr_not_a_dir(file_finder_t * self)
+static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
 {
     return (!self->top_is_dir);
 }
@@ -899,3 +907,123 @@ static status_t file_finder_calc_curr_path(file_finder_t * self)
     return FILEFIND_STATUS_OK;
 }
 
+static void item_result_free(item_result_t * item)
+{
+    if (item->path)
+    {
+        g_free(item->path);
+        item->path = NULL;
+    }
+
+    if (item->base)
+    {
+        g_free(item->base);
+        item->base = NULL;
+    }
+
+    if (item->dir_components)
+    {
+        g_ptr_array_free(item->dir_components, 1);
+    }
+
+    g_free(item);
+
+    return;
+}
+
+static status_t file_finder_calc_currrent_item_obj(
+    file_finder_t * self,
+    item_result_t * * item
+    )
+{
+    item_result_t * ret;
+    int comp_idx, end_comp_idx;
+    gboolean curr_not_a_dir;
+    GPtrArray * dir_components;
+    gchar * comp_copy;
+
+    *item = NULL;
+    dir_components = NULL;
+
+    ret = g_new0(item_result_t, 1);
+    
+    if (!ret)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    ret->path = NULL;
+    ret->basename = NULL;
+    ret->dir_components = NULL;
+    ret->base = NULL;
+    
+    if (! (ret->path = g_strdup(self->curr_path)))
+    {
+        goto cleanup;
+    }
+
+    comp_idx = 0;
+
+    if (!(ret->base = g_strdup(g_ptr_array_index(self->curr_comps, comp_idx))))
+    {
+        goto cleanup;
+    }
+
+    comp_idx++;
+
+    curr_not_a_dir = file_finder_curr_not_a_dir(self);
+
+    end_comp_idx = self->curr_comps->len - 1 - (curr_not_a_dir ? 1 : 0);
+
+    dir_components = g_ptr_array_new_with_free_func(destroy_string);
+       
+    for (; comp_idx < end_comp_idx ; comp_idx++)
+    {
+        comp_copy =
+            g_strdup(
+                g_ptr_array_index(self->curr_comps, comp_idx)
+            );
+
+        if (! comp_copy)
+        {
+            goto cleanup;
+        }
+        g_ptr_array_add(dir_components, comp_copy);
+    }
+
+    ret->dir_components = dir_components;
+    /* Avoid double-free. */
+    dir_components = NULL;
+
+    if (curr_not_a_dir)
+    {
+        if (!(ret->basename = 
+            g_strdup(
+                g_ptr_array_index(self->curr_comps, comp_idx)
+            ))
+        )
+        {
+            goto cleanup;
+        }
+    }
+
+    ret->stat_ret = self->top_stat;
+    ret->is_file = g_file_test(self->curr_path, G_FILE_TEST_IS_REGULAR);
+    ret->is_dir = g_file_test(self->curr_path, G_FILE_TEST_IS_DIR);
+    ret->is_link = g_file_test(self->curr_path, G_FILE_TEST_IS_SYMLINK);
+
+    *item = ret;
+
+    return FILEFIND_STATUS_OK;
+
+cleanup:
+
+    item_result_free(ret);
+    if (dir_components)
+    {
+        g_ptr_array_free(dir_components, 1);
+    }
+    
+    ret = NULL;
+    return FILEFIND_STATUS_OUT_OF_MEM;
+}
