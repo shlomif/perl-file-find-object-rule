@@ -812,6 +812,14 @@ int file_find_new(file_find_handle_t * * output_handle, const char * first_targe
         g_ptr_array_add(self->dir_stack, top_path);
     }
 
+    self->callback = NULL;
+    self->callback_context = NULL;
+    self->should_traverse_depth_first = FALSE;
+    self->filter_callback = NULL;
+    self->filter_context = NULL;
+    self->should_follow_link = FALSE;
+    self->should_not_cross_fs = FALSE;
+
     *output_handle = (file_find_handle_t *)self;
 
     return FILE_FIND_OK;
