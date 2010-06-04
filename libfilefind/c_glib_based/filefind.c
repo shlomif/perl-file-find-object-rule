@@ -856,3 +856,46 @@ cleanup:
     return FILE_FIND_OUT_OF_MEMORY;
 }
 
+static GCC_INLINE file_finder_curr_not_a_dir(file_finder_t * self)
+{
+    return (!self->top_is_dir);
+}
+
+/* 
+ * Calculates curr_path from self->curr_comps.
+ * Must be called whenever curr_comps is modified.
+ */ 
+static status_t file_finder_calc_curr_path(file_finder_t * self)
+{
+    gchar * * components;
+    int i;
+
+    if (self->curr_path)
+    {
+        g_free(self->curr_path);
+        self->curr_path = NULL;
+    }
+
+    components = g_new0(gchar *, self->curr_comps->len+1);
+    if (! components)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    for ( i = 0 ; i < self->curr_comps->len ; i++)
+    {
+        components[i] = g_ptr_array_index (self->curr_comps, i);
+    }
+    components[i] = NULL;
+
+    if (! (self->curr_path = g_build_filenamev(components)))
+    {
+        g_free(components);
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    g_free(components);
+
+    return FILEFIND_STATUS_OK;
+}
+
