@@ -704,7 +704,7 @@ enum FILE_FIND_IFACE_STATUS
     FILE_FIND_OUT_OF_MEMORY,
 };
 
-void destroy_string(gpointer data)
+static void destroy_string(gpointer data)
 {
     g_free((gchar *)data);
 
