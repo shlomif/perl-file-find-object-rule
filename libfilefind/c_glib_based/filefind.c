@@ -431,7 +431,17 @@ static gboolean file_finder_increment_target_index(file_finder_t * top);
 static status_t file_finder_calc_curr_path(file_finder_t * top);
 static gchar * file_finder_calc_next_target(file_finder_t * top);
 static status_t file_finder_mystat(file_finder_t * top);
-static path_component_t * file_finder_current_father(file_finder_t * top);
+
+static GCC_INLINE path_component_t * file_finder_current_father(
+    file_finder_t * top
+    )
+{
+    GPtrArray * dir_stack;
+
+    dir_stack = top->dir_stack;
+
+    return g_ptr_array_index(dir_stack, dir_stack->len-2);
+}
 
 static status_t deep_path_move_next(
     path_component_t * self, 
@@ -1077,5 +1087,14 @@ int file_find_next(file_find_handle_t * handle)
 
 cleanup:
     return FILE_FIND_OUT_OF_MEMORY;
+}
+
+const gchar * file_find_get_path(file_find_handle_t * handle)
+{
+    file_finder_t * self;
+
+    self = (file_finder_t *)handle;
+
+    return self->item_obj ? self->item_obj->path : NULL;
 }
 
