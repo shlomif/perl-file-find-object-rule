@@ -693,6 +693,43 @@ static path_component_t * top_path_new(
     return self;
 }
 
+static void path_component_free(path_component_t * self)
+{
+    if (self->curr_file)
+    {
+        g_free(self->curr_file);
+        self->curr_file = NULL;
+    }
+
+    if (self->files)
+    {
+        g_ptr_array_free(self->files, TRUE);
+        self->files = NULL;
+    }
+
+    if (self->last_dir_scanned)
+    {
+        g_free( self->last_dir_scanned );
+        self->last_dir_scanned = NULL;
+    }
+
+    if (self->traverse_to)
+    {
+        g_ptr_array_free(self->traverse_to, TRUE);
+        self->traverse_to = NULL;
+    }
+
+    if (self->inodes)
+    {
+        g_tree_destroy(self->inodes);
+        self->inodes = NULL;
+    }
+    
+    g_free(self);
+
+    return;
+}
+
 typedef struct 
 {
     int stub;
