@@ -1128,4 +1128,18 @@ static status_t file_finder_master_move_to_next(file_finder_t * self)
     return self->current->move_next(self->current, self);
 }
 
+static status_t file_finder_become_default(file_finder_t * self);
 
+static status_t file_finder_me_die(file_finder_t * self)
+{
+    if (self->dir_stack->len > 1)
+    {
+        return file_find_become_default(self);
+    }
+    else
+    {
+        self->item_obj = NULL;
+
+        return FILEFIND_STATUS_OK;
+    }
+}
