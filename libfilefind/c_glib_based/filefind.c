@@ -1134,7 +1134,7 @@ static status_t file_finder_me_die(file_finder_t * self)
 {
     if (self->dir_stack->len > 1)
     {
-        return file_find_become_default(self);
+        return file_finder_become_default(self);
     }
     else
     {
@@ -1143,3 +1143,43 @@ static status_t file_finder_me_die(file_finder_t * self)
         return FILEFIND_STATUS_OK;
     }
 }
+
+static status_t file_finder_become_default(file_finder_t * self)
+{
+    path_component_free( 
+        (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1) 
+    );
+    g_ptr_array_remove_index (self->dir_stack, self->dir_stack->len - 1);
+
+    self->current =
+        (path_component_t *)
+        g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
+        ;
+
+    g_ptr_array_remove_index (self->curr_comps, self->curr_comps->len - 1);
+
+    if (self->dir_stack->len > 1)
+    {
+        /* 
+         * If depth is false, then we no longer need the _curr_path
+         * of the directories above the previously-set value, because we 
+         * already traversed them.
+         *
+         * TODO : should this be if (! self->depth)
+         */ 
+        if (self->should_traverse_depth_first)
+        {
+            status_t status;
+
+            status = file_finder_calc_curr_path(self);
+
+            if (status != FILEFIND_STATUS_OK)
+            {
+                return status;
+            }
+        }
+    }
+
+    return FILEFIND_STATUS_OK;
+}
+
