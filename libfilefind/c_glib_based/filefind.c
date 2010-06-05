@@ -1098,3 +1098,7 @@ const gchar * file_find_get_path(file_find_handle_t * handle)
     return self->item_obj ? self->item_obj->path : NULL;
 }
 
+static gboolean file_finder_increment_target_index(file_finder_t * self)
+{
+    return (++self->target_index < self->targets->len);
+}
