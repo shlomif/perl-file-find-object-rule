@@ -1102,3 +1102,24 @@ static gboolean file_finder_increment_target_index(file_finder_t * self)
 {
     return (++self->target_index < self->targets->len);
 }
+
+/* 
+ * TODO : can this return NULL if it reached the end rather than ran out
+ * of memory?
+ * */
+static gchar * file_finder_calc_next_target(file_finder_t * self)
+{
+    gchar * target;
+
+    target = g_ptr_array_index(self->targets, self->target_index);
+
+    if (! target)
+    {
+        return NULL;
+    }
+    else
+    {
+        return g_strdup(target);
+    }
+}
+
