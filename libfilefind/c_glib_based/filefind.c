@@ -1123,3 +1123,9 @@ static gchar * file_finder_calc_next_target(file_finder_t * self)
     }
 }
 
+static status_t file_finder_master_move_to_next(file_finder_t * self)
+{
+    return self->current->move_next(self->current, self);
+}
+
+
