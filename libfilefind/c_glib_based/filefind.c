@@ -32,6 +32,7 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <string.h>
 
 #include "inline.h"
 
@@ -421,7 +422,7 @@ void inode_tree_destroy_val(gpointer data)
 }
 
 
-static status_t file_finder_fill_actions(
+static void file_finder_fill_actions(
     file_finder_t * top,
     path_component_t * from
 );
@@ -647,11 +648,7 @@ static status_t top_path_move_next(
         {
             GTree * find;
 
-            if (file_finder_fill_actions(top, self)
-                    == FILEFIND_STATUS_OUT_OF_MEM)
-            {
-                return FILEFIND_STATUS_OUT_OF_MEM;
-            }
+            file_finder_fill_actions(top, self);
 
             if (file_finder_mystat(top)
                     == FILEFIND_STATUS_OUT_OF_MEM)
@@ -690,7 +687,6 @@ static path_component_t * top_path_new(
 )
 {
     path_component_t * self;
-    status_t status;
 
     self = g_new0(path_component_t, 1);
 
@@ -701,13 +697,7 @@ static path_component_t * top_path_new(
 
     self->move_next = top_path_move_next;
 
-    status = file_finder_fill_actions(top, self);
-
-    if (status == FILEFIND_STATUS_OUT_OF_MEM)
-    {
-        g_free(self);
-        return NULL;
-    }
+    file_finder_fill_actions(top, self);
 
     return self;
 }
@@ -1201,3 +1191,12 @@ static status_t file_finder_calc_default_actions(file_finder_t * self)
     return FILEFIND_STATUS_OK;
 }
 
+static void file_finder_fill_actions(
+    file_finder_t * self,
+    path_component_t * other
+)
+{
+    memcpy(other->actions, self->def_actions, sizeof(other->actions));
+
+    return;
+}
