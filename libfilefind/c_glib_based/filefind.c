@@ -1183,3 +1183,21 @@ static status_t file_finder_become_default(file_finder_t * self)
     return FILEFIND_STATUS_OK;
 }
 
+static status_t file_finder_calc_default_actions(file_finder_t * self)
+{
+    int calc_obj = self->callback ? ACTION_RUN_CB : ACTION_SET_OBJ;
+
+    if (self->should_traverse_depth_first)
+    {
+        self->def_actions[0] = ACTION_RECURSE;
+        self->def_actions[1] = calc_obj;
+    }
+    else
+    {
+        self->def_actions[0] = calc_obj; 
+        self->def_actions[1] = ACTION_RECURSE; 
+    }
+
+    return FILEFIND_STATUS_OK;
+}
+
