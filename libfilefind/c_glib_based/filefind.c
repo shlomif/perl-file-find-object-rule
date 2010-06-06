@@ -58,6 +58,7 @@ enum FILEFIND_STATUS
     FILEFIND_STATUS_DONT_SCAN,
     FILEFIND_STATUS_END,
     FILEFIND_STATUS_FALSE,
+    FILEFIND_STATUS_SKIP,
 };
 
 struct file_finder_struct;
@@ -1199,4 +1200,15 @@ static void file_finder_fill_actions(
     memcpy(other->actions, self->def_actions, sizeof(other->actions));
 
     return;
+}
+
+static status_t file_finder_mystat(file_finder_t * self)
+{
+    g_lstat(self->curr_path, &(self->top_stat));
+
+    self->top_is_dir = g_file_test(self->curr_path, G_FILE_TEST_IS_DIR);
+    
+    self->top_is_link = g_file_test(self->curr_path, G_FILE_TEST_IS_SYMLINK);
+
+    return FILEFIND_STATUS_SKIP;
 }
