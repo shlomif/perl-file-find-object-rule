@@ -1212,3 +1212,17 @@ static status_t file_finder_mystat(file_finder_t * self)
 
     return FILEFIND_STATUS_SKIP;
 }
+
+static status_t file_finder_check_process_current(file_finder_t * self)
+{
+    status_t status;
+
+    if (!defined(self->current->curr_file))
+    {
+        return FILEFIND_STATUS_FALSE;
+    }
+    
+    return file_finder_filter_wrapper(self);
+}
+
+
