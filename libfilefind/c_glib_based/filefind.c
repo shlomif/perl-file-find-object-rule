@@ -1225,4 +1225,20 @@ static status_t file_finder_check_process_current(file_finder_t * self)
     return file_finder_filter_wrapper(self);
 }
 
+static status_t file_finder_process_current(file_finder_t * self)
+{
+    status_t ret;
+
+    ret = file_finder_check_process_current(self);
+
+    if (ret != FILEFIND_STATUS_OK)
+    {
+        return ret;
+    }
+    else
+    {
+        return file_finder_process_current_actions(self);
+    }
+}
+
 
