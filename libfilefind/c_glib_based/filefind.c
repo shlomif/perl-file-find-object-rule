@@ -934,7 +934,7 @@ static void item_result_free(item_result_t * item)
     return;
 }
 
-static status_t file_finder_calc_currrent_item_obj(
+static status_t file_finder_calc_current_item_obj(
     file_finder_t * self,
     item_result_t * * item
     )
@@ -1240,5 +1240,12 @@ static status_t file_finder_process_current(file_finder_t * self)
         return file_finder_process_current_actions(self);
     }
 }
+
+static status_t file_finder_set_boj(file_finder_t * self)
+{
+    self->item_obj = NULL;
+    return file_finder_calc_current_item_obj(self, &(self->item_obj));
+}
+
 
 
