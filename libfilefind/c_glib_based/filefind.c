@@ -1241,11 +1241,22 @@ static status_t file_finder_process_current(file_finder_t * self)
     }
 }
 
-static status_t file_finder_set_boj(file_finder_t * self)
+static status_t file_finder_set_obj(file_finder_t * self)
 {
     self->item_obj = NULL;
     return file_finder_calc_current_item_obj(self, &(self->item_obj));
 }
 
+static status_t file_finder_run_cb(file_finder_t * self)
+{
+    status_t ret;
 
+    ret = file_finder_set_obj(self);
 
+    if (ret != FILEFIND_STATUS_OK)
+    {
+        return ret;
+    }
+
+    (self->callback)(self->curr_path, self->callback_context);
+}
