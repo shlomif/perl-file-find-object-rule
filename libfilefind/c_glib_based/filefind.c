@@ -1303,3 +1303,35 @@ static status_t file_finder_process_current_actions(file_finder_t * self)
     return FILEFIND_STATUS_FALSE;
 }
 
+static status_t file_finder_check_subdir(file_finder_t * self);
+
+static status_t file_finder_recurse(file_finder_t * self)
+{
+    status_t status;
+    path_component_t * deep_path;
+
+    status = file_finder_check_subdir(self);
+
+    if (status == FILEFIND_STATUS_FALSE)
+    {
+        return FILEFIND_STATUS_SKIP;
+    }
+    else if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    deep_path = deep_path_new(self, self->current);
+
+    if (!deep_path)
+    {
+        return FILEFIND_STATUS_OUT_OF_MEM;
+    }
+
+    self->current = deep_path;
+    g_ptr_array_add(self->dir_stack, deep_path);
+
+    return FILEFIND_STATUS_FALSE;   
+}
+
+
