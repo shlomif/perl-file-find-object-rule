@@ -63,9 +63,11 @@ enum FILEFIND_STATUS
 
 struct file_finder_struct;
 
+#define NUM_ACTIONS 2
 struct path_component_struct
 {
-    gint actions[2];
+    gint actions[NUM_ACTIONS];
+    gint next_action_idx;
     gchar * curr_file;
     GPtrArray * files;
     gchar * last_dir_scanned;
@@ -1198,6 +1200,7 @@ static void file_finder_fill_actions(
 )
 {
     memcpy(other->actions, self->def_actions, sizeof(other->actions));
+    other->next_action_idx = 0;
 
     return;
 }
@@ -1213,17 +1216,19 @@ static status_t file_finder_mystat(file_finder_t * self)
     return FILEFIND_STATUS_SKIP;
 }
 
+static status_t file_finder_filter_wrapper(file_finder_t * self);
+
 static status_t file_finder_check_process_current(file_finder_t * self)
 {
-    status_t status;
-
-    if (!defined(self->current->curr_file))
+    if (! self->current->curr_file)
     {
         return FILEFIND_STATUS_FALSE;
     }
     
     return file_finder_filter_wrapper(self);
 }
+
+static status_t file_finder_process_current_actions(file_finder_t * self);
 
 static status_t file_finder_process_current(file_finder_t * self)
 {
@@ -1259,4 +1264,42 @@ static status_t file_finder_run_cb(file_finder_t * self)
     }
 
     (self->callback)(self->curr_path, self->callback_context);
+
+    return FILEFIND_STATUS_OK;
 }
+
+static status_t file_finder_recurse(file_finder_t * self);
+
+static status_t file_finder_process_current_actions(file_finder_t * self)
+{
+    while (self->current->next_action_idx < NUM_ACTIONS)
+    {
+        gint action;
+        status_t status;
+
+        action = self->current->actions[(self->current->next_action_idx)++];
+
+        switch (action)
+        {
+            case ACTION_RUN_CB:
+                status = file_finder_run_cb(self);
+                break;
+
+            case ACTION_SET_OBJ:
+                status = file_finder_set_obj(self);
+                break;
+
+            case ACTION_RECURSE:
+                status = file_finder_recurse(self);
+                break;
+        }
+
+        if (status != FILEFIND_STATUS_SKIP)
+        {
+            return status;
+        }
+    }
+
+    return FILEFIND_STATUS_FALSE;
+}
+
