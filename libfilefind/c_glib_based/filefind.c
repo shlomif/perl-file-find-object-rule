@@ -1334,4 +1334,20 @@ static status_t file_finder_recurse(file_finder_t * self)
     return FILEFIND_STATUS_FALSE;   
 }
 
+static status_t file_finder_filter_wrapper(file_finder_t * self)
+{
+    if (self->filter_callback)
+    {
+        return
+        (
+            (self->filter_callback)(self->curr_path, self->filter_context)
+            ? FILEFIND_STATUS_OK
+            : FILEFIND_STATUS_FALSE
+        );
+    }
+    else
+    {
+        return FILEFIND_STATUS_OK;
+    }
+}
 
