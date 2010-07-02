@@ -122,7 +122,7 @@ struct file_finder_struct
     gboolean should_follow_link;
 
     /* This is ->nocrossfs() from File-Find-Object. */
-    gboolean should_not_cross_fs; 
+    gboolean should_not_cross_fs;
 };
 
 typedef struct file_finder_struct file_finder_t;
@@ -1349,5 +1349,46 @@ static status_t file_finder_filter_wrapper(file_finder_t * self)
     {
         return FILEFIND_STATUS_OK;
     }
+}
+
+static status_t file_finder_is_loop(file_finder_t * self);
+
+static status_t file_finder_check_subdir(file_finder_t * self)
+{
+    status_t status;
+
+    /* 
+     * If current is not a directory always return 0, because we may
+     * be asked to traverse single-files.
+     */
+
+    if (file_finder_curr_not_a_dir(self))
+    {
+        return FILEFIND_STATUS_FALSE;    
+    }
+
+    if (self->dir_stack->len <= 1)
+    {
+        return FILEFIND_STATUS_OK;
+    }
+
+    if ((!self->should_follow_link) && (self->top_is_link))
+    {
+        return FILEFIND_STATUS_FALSE;
+    }
+
+    if ((!self->should_not_cross_fs) && (self->top_stat.st_dev != self->dev))
+    {
+        return FILEFIND_STATUS_FALSE;
+    }
+
+    status = file_finder_is_loop(self);
+
+    if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        return status;
+    }
+    
+    return ((status == FILEFIND_STATUS_OK) ? FILEFIND_STATUS_FALSE : FILEFIND_STATUS_OK);
 }
 
