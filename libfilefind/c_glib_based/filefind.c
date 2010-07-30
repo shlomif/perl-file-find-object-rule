@@ -1418,3 +1418,8 @@ static status_t file_finder_is_loop(file_finder_t * self)
     }
 }
 
+static status_t file_finder_open_dir(file_finder_t * self)
+{
+    return path_component_component_open_dir(self->current, self->curr_path);
+}
+
