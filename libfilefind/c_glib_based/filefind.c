@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
 This package is free software; you can redistribute it and/or modify it under 
@@ -33,6 +33,7 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "inline.h"
 
@@ -139,7 +140,7 @@ static GPtrArray * string_array_copy(GPtrArray * arr)
         return NULL;
     }
 
-    for( i = 0 ; i < arr->len ; i++)
+    for ( i = 0 ; i < arr->len ; i++)
     {
         string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
         if (! string_copy)
@@ -194,6 +195,7 @@ static GCC_INLINE ino_t path_component_get_inode(path_component_t * self)
     return self->stat_ret.st_ino;
 }
 
+#if 0
 static gboolean path_component_is_same_inode(path_component_t * self, mystat_t * st)
 {
     return
@@ -203,6 +205,7 @@ static gboolean path_component_is_same_inode(path_component_t * self, mystat_t *
         && (path_component_get_inode(self) != 0)
     );
 }
+#endif
 
 static gboolean path_component_should_scan_dir(
     path_component_t * self,
@@ -377,7 +380,7 @@ static gboolean dup_inode_tree(
 }
 
 
-gint inode_tree_cmp(gconstpointer a_void, gconstpointer b_void)
+static gint inode_tree_cmp(gconstpointer a_void, gconstpointer b_void)
 {
     inode_data_t * a, * b;
 
@@ -414,12 +417,12 @@ static gint inode_tree_cmp_with_context(gconstpointer a_void, gconstpointer b_vo
     return inode_tree_cmp(a_void, b_void);
 }
 
-void inode_tree_destroy_key(gpointer data)
+static void inode_tree_destroy_key(gpointer data)
 {
     g_free(data);
 }
 
-void inode_tree_destroy_val(gpointer data)
+static void inode_tree_destroy_val(gpointer data)
 {
     g_free(data);
 }
@@ -752,6 +755,7 @@ enum FILE_FIND_IFACE_STATUS
     FILE_FIND_OK = 0,
     FILE_FIND_OUT_OF_MEMORY,
     FILE_FIND_END,
+    FILE_FIND_COULD_NOT_OPEN_DIR,
 };
 
 static void destroy_string(gpointer data)
@@ -867,6 +871,56 @@ cleanup:
     }
 
     return FILE_FIND_OUT_OF_MEMORY;
+}
+
+static void file_finder_calc_default_actions(file_finder_t * self)
+{
+    int calc_obj = self->callback ? ACTION_RUN_CB : ACTION_SET_OBJ;
+
+    if (self->should_traverse_depth_first)
+    {
+        self->def_actions[0] = ACTION_RECURSE;
+        self->def_actions[1] = calc_obj;
+    }
+    else
+    {
+        self->def_actions[0] = calc_obj; 
+        self->def_actions[1] = ACTION_RECURSE; 
+    }
+
+    return;
+}
+
+void file_find_set_callback(
+    file_find_handle_t * handle, 
+    void (*callback)(const char * filename, void * context)
+)
+{
+    file_finder_t * self;
+
+    self = (file_finder_t *)handle;
+   
+    self->callback = callback;
+
+    file_finder_calc_default_actions(self);
+
+    return;
+}
+
+void file_find_set_should_traverse_depth_first(
+    file_find_handle_t * handle,
+    int should_traverse_depth_first
+)
+{
+    file_finder_t * self;
+
+    self = (file_finder_t *)handle;
+   
+    self->should_traverse_depth_first = should_traverse_depth_first;
+
+    file_finder_calc_default_actions(self);
+
+    return;
 }
 
 static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
@@ -1176,23 +1230,6 @@ static status_t file_finder_become_default(file_finder_t * self)
     return FILEFIND_STATUS_OK;
 }
 
-static status_t file_finder_calc_default_actions(file_finder_t * self)
-{
-    int calc_obj = self->callback ? ACTION_RUN_CB : ACTION_SET_OBJ;
-
-    if (self->should_traverse_depth_first)
-    {
-        self->def_actions[0] = ACTION_RECURSE;
-        self->def_actions[1] = calc_obj;
-    }
-    else
-    {
-        self->def_actions[0] = calc_obj; 
-        self->def_actions[1] = ACTION_RECURSE; 
-    }
-
-    return FILEFIND_STATUS_OK;
-}
 
 static void file_finder_fill_actions(
     file_finder_t * self,
@@ -1423,3 +1460,72 @@ static status_t file_finder_open_dir(file_finder_t * self)
     return path_component_component_open_dir(self->current, self->curr_path);
 }
 
+int file_find_get_current_node_files_list(
+    file_find_handle_t * handle,
+    int * ptr_to_num_files,
+    char * * * ptr_to_file_names
+)
+{
+    file_finder_t * self;
+    status_t status;
+
+    self = (file_finder_t *)handle;
+
+    *ptr_to_num_files = 0;
+    *ptr_to_file_names = NULL;
+
+    status = file_finder_open_dir(self);
+
+    if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        return FILE_FIND_OUT_OF_MEMORY;
+    }
+
+    if (status == FILEFIND_STATUS_OK)
+    {
+        int num_files, i, up_to_i;
+        char * * file_names = NULL, * * next_file_name;
+        GPtrArray * copy_from_files;
+
+        copy_from_files = self->current->files;
+
+        num_files = copy_from_files->len;
+        file_names = malloc(sizeof(file_names[0]) * (num_files+1));
+
+        if (! file_names)
+        {
+            return FILE_FIND_OUT_OF_MEMORY;
+        }
+
+        next_file_name = file_names;
+
+        for ( i = 0 ; i < num_files ; i++, next_file_name++ )
+        {
+            if (! ((*next_file_name)
+                = strdup((char *)g_ptr_array_index(copy_from_files, i)))
+            )
+            {
+                for (up_to_i = 0; up_to_i < i; up_to_i++)
+                {
+                    free(file_names[up_to_i]);
+                }
+
+                free(file_names);
+
+                return FILE_FIND_OUT_OF_MEMORY;
+            }
+        }
+
+        /* Add a NULL terminator at the end of the file names. */
+        *next_file_name = NULL;
+
+        *ptr_to_num_files = num_files;
+        *ptr_to_file_names = file_names;
+
+        return FILE_FIND_OK;
+    }
+    else
+    {
+        return FILE_FIND_COULD_NOT_OPEN_DIR;
+    }
+}
