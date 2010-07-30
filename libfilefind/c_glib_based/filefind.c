@@ -1392,3 +1392,29 @@ static status_t file_finder_check_subdir(file_finder_t * self)
     return ((status == FILEFIND_STATUS_OK) ? FILEFIND_STATUS_FALSE : FILEFIND_STATUS_OK);
 }
 
+static status_t file_finder_is_loop(file_finder_t * self)
+{
+    ino_t inode;
+    inode_data_t key;
+
+    if ((inode = self->top_stat.st_ino))
+    {
+        key.st_ino = inode;
+        key.st_dev = self->top_stat.st_dev;
+
+        return
+            g_tree_search(
+                self->current->inodes,
+                inode_tree_cmp, 
+                ((gconstpointer)&key)
+            )
+            ? FILEFIND_STATUS_OK
+            : FILEFIND_STATUS_FALSE
+            ;
+    }
+    else
+    {
+        return FILEFIND_STATUS_FALSE;
+    }
+}
+
