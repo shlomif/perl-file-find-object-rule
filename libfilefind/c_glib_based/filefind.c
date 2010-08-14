@@ -1460,6 +1460,58 @@ static status_t file_finder_open_dir(file_finder_t * self)
     return path_component_component_open_dir(self->current, self->curr_path);
 }
 
+int file_find_set_traverse_to(
+    file_find_handle_t * handle,
+    int num_children,
+    char * * children
+)
+{
+    file_finder_t * self;
+    status_t status;
+    int i, up_to_i;
+    GPtrArray * traverse_to;
+    gchar * new_string;
+
+    self = (file_finder_t *)handle;
+ 
+    status = file_finder_open_dir(self);
+
+    if (status == FILEFIND_STATUS_OUT_OF_MEM)
+    {
+        return FILE_FIND_OUT_OF_MEMORY;
+    }
+
+    if (status == FILEFIND_STATUS_OK)
+    {
+        traverse_to = self->current->traverse_to;
+
+        self->current->next_traverse_to_idx = 0;
+
+        g_ptr_array_set_size(traverse_to, num_children);
+
+        for (i=0 ; i < num_children ; i++)
+        {
+            if (!(new_string = g_strdup((gchar *)children[i])))
+            {
+                for (up_to_i = 0 ; up_to_i < i ; up_to_i++)
+                {
+                    g_free (g_ptr_array_index(traverse_to, up_to_i));
+                    g_ptr_array_index(traverse_to, up_to_i) = NULL;
+                }
+                return FILE_FIND_OUT_OF_MEMORY;
+            }
+            
+            g_ptr_array_index(traverse_to, i) = new_string;
+        }
+
+        return FILE_FIND_OK;
+    }
+    else
+    {
+        return FILE_FIND_COULD_NOT_OPEN_DIR;
+    }
+}
+
 int file_find_get_current_node_files_list(
     file_find_handle_t * handle,
     int * ptr_to_num_files,
