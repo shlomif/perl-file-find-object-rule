@@ -37,6 +37,8 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 
 #include "inline.h"
 
+#include "filefind.h"
+
 enum
 {
     ACTION_RUN_CB = 0,
@@ -744,19 +746,6 @@ static void path_component_free(path_component_t * self)
 
     return;
 }
-
-typedef struct 
-{
-    int stub;
-} file_find_handle_t;
-
-enum FILE_FIND_IFACE_STATUS
-{
-    FILE_FIND_OK = 0,
-    FILE_FIND_OUT_OF_MEMORY,
-    FILE_FIND_END,
-    FILE_FIND_COULD_NOT_OPEN_DIR,
-};
 
 static void destroy_string(gpointer data)
 {
