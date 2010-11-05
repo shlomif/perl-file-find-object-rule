@@ -68,6 +68,11 @@ extern int file_find_set_traverse_to(
     char * * children
 );
 
+
+extern int file_find_prune(
+    file_find_handle_t * handle
+);
+
 int file_find_get_current_node_files_list(
     file_find_handle_t * handle,
     int * ptr_to_num_files,

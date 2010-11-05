@@ -1570,3 +1570,11 @@ int file_find_get_current_node_files_list(
         return FILE_FIND_COULD_NOT_OPEN_DIR;
     }
 }
+
+int file_find_prune(
+    file_find_handle_t * handle
+)
+{
+    return file_find_set_traverse_to(handle, 0, NULL);
+}
+
