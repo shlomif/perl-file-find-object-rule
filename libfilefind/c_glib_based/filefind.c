@@ -1238,7 +1238,7 @@ static status_t file_finder_become_default(file_finder_t * self)
         }
     }
 
-    return FILEFIND_STATUS_OK;
+    return FILEFIND_STATUS_END;
 }
 
 
