@@ -130,6 +130,19 @@ struct file_finder_struct
 
 typedef struct file_finder_struct file_finder_t;
 
+static void item_result_free(item_result_t * item);
+
+static GCC_INLINE void free_item_obj(file_finder_t * self)
+{
+    if (self->item_obj)
+    {
+        item_result_free(self->item_obj);
+        self->item_obj = NULL;
+    }
+
+    return;
+}
+
 static GPtrArray * string_array_copy(GPtrArray * arr)
 {
     GPtrArray * ret;
@@ -852,7 +865,7 @@ cleanup:
 
         if (self->curr_comps)
         {
-            g_ptr_array_free(self->dir_stack, 1);
+            g_ptr_array_free(self->curr_comps, 1);
             self->curr_comps = NULL;
         }
 
@@ -861,8 +874,8 @@ cleanup:
             g_ptr_array_free(self->targets, 1);
             self->targets = NULL;
         }
-        
-        g_free(self);   
+
+        g_free(self);
     }
 
     return FILE_FIND_OUT_OF_MEMORY;
@@ -996,7 +1009,6 @@ static status_t file_finder_calc_current_item_obj(
     GPtrArray * dir_components;
     gchar * comp_copy;
 
-    *item = NULL;
     dir_components = NULL;
 
     ret = g_new0(item_result_t, 1);
@@ -1051,7 +1063,7 @@ static status_t file_finder_calc_current_item_obj(
 
     if (curr_not_a_dir)
     {
-        if (!(ret->basename = 
+        if (!(ret->basename =
             g_strdup(
                 g_ptr_array_index(self->curr_comps, comp_idx)
             ))
@@ -1180,7 +1192,7 @@ static status_t file_finder_me_die(file_finder_t * self)
     }
     else
     {
-        self->item_obj = NULL;
+        free_item_obj(self);
 
         return FILEFIND_STATUS_OK;
     }
@@ -1280,7 +1292,7 @@ static status_t file_finder_process_current(file_finder_t * self)
 
 static status_t file_finder_set_obj(file_finder_t * self)
 {
-    self->item_obj = NULL;
+    free_item_obj(self);
     return file_finder_calc_current_item_obj(self, &(self->item_obj));
 }
 
@@ -1618,5 +1630,46 @@ int file_find_get_traverse_to(
             ptr_to_num_files,
             ptr_to_file_names
             );
+}
+
+extern int file_find_free(
+    file_find_handle_t * handle
+)
+{
+    file_finder_t * self;
+    gint i;
+    
+    self = (file_finder_t *)handle;
+  
+    for (i = 0 ; i < self->dir_stack->len ; i++)
+    {
+        path_component_free(g_ptr_array_index(self->dir_stack, i));
+    }
+    g_ptr_array_free(self->dir_stack, 1);
+    self->dir_stack = NULL;
+
+    if (self->curr_comps)
+    {
+        g_ptr_array_free(self->curr_comps, 1);
+        self->curr_comps = NULL;
+    }
+
+    if (self->targets)
+    {
+        g_ptr_array_free(self->targets, 1);
+        self->targets = NULL;
+    }
+
+    if (self->curr_path)
+    {
+        g_free(self->curr_path);
+        self->curr_path = NULL;
+    }
+
+    free_item_obj(self);
+
+    g_free (self);
+
+    return FILE_FIND_OK;
 }
 

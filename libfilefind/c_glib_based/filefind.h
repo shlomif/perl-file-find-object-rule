@@ -60,7 +60,7 @@ extern void file_find_set_should_traverse_depth_first(
 
 extern int file_find_next(file_find_handle_t * handle);
 
-extern const gchar * file_find_get_path(file_find_handle_t * handle);
+extern const char * file_find_get_path(file_find_handle_t * handle);
 
 extern int file_find_set_traverse_to(
     file_find_handle_t * handle,
@@ -79,11 +79,14 @@ extern int file_find_get_current_node_files_list(
     char * * * ptr_to_file_names
 );
 
-
 extern int file_find_get_traverse_to(
     file_find_handle_t * handle,
     int * ptr_to_num_files,
     char * * * ptr_to_file_names
+);
+
+extern int file_find_free(
+    file_find_handle_t * handle
 );
 
 #endif /* #ifndef FILEFIND_H */
