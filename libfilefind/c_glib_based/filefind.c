@@ -773,6 +773,8 @@ static void destroy_string(gpointer data)
     return;
 }
 
+static void file_finder_calc_default_actions(file_finder_t * self);
+
 int file_find_new(file_find_handle_t * * output_handle, const char * first_target)
 {
     file_finder_t * self = NULL;
@@ -846,6 +848,8 @@ int file_find_new(file_find_handle_t * * output_handle, const char * first_targe
     self->should_not_cross_fs = FALSE;
 
     *output_handle = (file_find_handle_t *)self;
+
+    file_finder_calc_default_actions(self);
 
     return FILE_FIND_OK;
 
@@ -1121,11 +1125,11 @@ int file_find_next(file_find_handle_t * handle)
             {
                 goto cleanup;
             }
-            else if (local_status == FILEFIND_STATUS_END)
+            else if (local_status == FILEFIND_STATUS_OK)
             {
-                total_status = FILEFIND_STATUS_OK;
+                total_status = FILEFIND_STATUS_END;
             }
-            else /* (local_status == FILEFIND_STATUS_OK) */
+            else /* (local_status == FILEFIND_STATUS_END) */
             {
                 total_status = file_finder_me_die(self);
 
