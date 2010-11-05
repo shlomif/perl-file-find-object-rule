@@ -182,10 +182,16 @@ static GPtrArray * path_component_files_copy(path_component_t * self)
     return string_array_copy(self->files);
 }
 
+/*
+ * This method was useful in Perl, but is not useful here due to the
+ * implementation as a glib array and the pure-C-ish interface.
+ * */
+#if 0
 static GPtrArray * path_component_traverse_to_copy(path_component_t * self)
 {
     return string_array_copy(self->traverse_to);
 }
+#endif
 
 static GCC_INLINE dev_t path_component_get_dev(path_component_t * self)
 {
@@ -1501,6 +1507,53 @@ int file_find_set_traverse_to(
     }
 }
 
+static int glib_strings_array_to_c(
+    GPtrArray * array,
+    int start_idx,
+    int * ptr_to_num_strings,
+    char * * * ptr_to_strings
+)
+{
+    int num_strings;
+    int i, up_to_i;
+    char * * strings = NULL, * * next_string;
+
+    num_strings = array->len - start_idx;
+    strings = malloc(sizeof(strings[0]) * (num_strings+1));
+
+    if (! strings)
+    {
+        return FILE_FIND_OUT_OF_MEMORY;
+    }
+
+    next_string = strings;
+
+    for ( i = 0 ; i < num_strings ; i++, next_string++ )
+    {
+        if (! ((*next_string)
+                    = strdup((char *)g_ptr_array_index(array, i+start_idx)))
+           )
+        {
+            for (up_to_i = 0; up_to_i < i; up_to_i++)
+            {
+                free(strings[up_to_i]);
+            }
+
+            free(strings);
+
+            return FILE_FIND_OUT_OF_MEMORY;
+        }
+    }
+
+    /* Add a NULL terminator at the end of the file names. */
+    *next_string = NULL;
+
+    *ptr_to_num_strings = num_strings;
+    *ptr_to_strings = strings;
+
+    return FILE_FIND_OK;
+}
+
 int file_find_get_current_node_files_list(
     file_find_handle_t * handle,
     int * ptr_to_num_files,
@@ -1524,46 +1577,14 @@ int file_find_get_current_node_files_list(
 
     if (status == FILEFIND_STATUS_OK)
     {
-        int num_files, i, up_to_i;
-        char * * file_names = NULL, * * next_file_name;
-        GPtrArray * copy_from_files;
+        
 
-        copy_from_files = self->current->files;
-
-        num_files = copy_from_files->len;
-        file_names = malloc(sizeof(file_names[0]) * (num_files+1));
-
-        if (! file_names)
-        {
-            return FILE_FIND_OUT_OF_MEMORY;
-        }
-
-        next_file_name = file_names;
-
-        for ( i = 0 ; i < num_files ; i++, next_file_name++ )
-        {
-            if (! ((*next_file_name)
-                = strdup((char *)g_ptr_array_index(copy_from_files, i)))
-            )
-            {
-                for (up_to_i = 0; up_to_i < i; up_to_i++)
-                {
-                    free(file_names[up_to_i]);
-                }
-
-                free(file_names);
-
-                return FILE_FIND_OUT_OF_MEMORY;
-            }
-        }
-
-        /* Add a NULL terminator at the end of the file names. */
-        *next_file_name = NULL;
-
-        *ptr_to_num_files = num_files;
-        *ptr_to_file_names = file_names;
-
-        return FILE_FIND_OK;
+        return glib_strings_array_to_c(
+            self->current->files,
+            0,
+            ptr_to_num_files,
+            ptr_to_file_names
+        );
     }
     else
     {
@@ -1576,5 +1597,26 @@ int file_find_prune(
 )
 {
     return file_find_set_traverse_to(handle, 0, NULL);
+}
+
+int file_find_get_traverse_to(
+    file_find_handle_t * handle,
+    int * ptr_to_num_files,
+    char * * * ptr_to_file_names
+)
+{
+    file_finder_t * self;
+    
+    self = (file_finder_t *)handle;
+
+    *ptr_to_num_files = 0;
+    *ptr_to_file_names = NULL;
+
+    return glib_strings_array_to_c(
+            self->current->traverse_to,
+            self->current->next_traverse_to_idx,
+            ptr_to_num_files,
+            ptr_to_file_names
+            );
 }
 
