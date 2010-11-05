@@ -43,6 +43,7 @@ SET(CPACK_SOURCE_IGNORE_FILES
     "/cmake_install.cmake$"
     "/CPackConfig.cmake$"
     "/CPackSourceConfig.cmake$"
+    "/minifind$"
     "/tags$"
     "/config\\\\.h$"
     "/Testing/"
