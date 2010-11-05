@@ -191,5 +191,14 @@ INSTALL(
         "include/pthread"
 )
 
-ENABLE_TESTING()
+ADD_CUSTOM_TARGET(
+    "test"
+    "perl" "run-tests.pl"
+)
+
+ADD_DEPENDENCIES(
+    "test"
+    "all"
+)
+
 
