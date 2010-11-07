@@ -29,5 +29,7 @@ int main(int argc, char * argv[])
         return -1;
     }
 
+    tree = NULL;
+
     return 0;
 }
