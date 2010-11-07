@@ -739,7 +739,7 @@ static void path_component_free(path_component_t * self)
 
     if (self->files)
     {
-        g_ptr_array_free(self->files, TRUE);
+        string_array_free(self->files);
         self->files = NULL;
     }
 
@@ -751,7 +751,7 @@ static void path_component_free(path_component_t * self)
 
     if (self->traverse_to)
     {
-        g_ptr_array_free(self->traverse_to, TRUE);
+        string_array_free (self->traverse_to);
         self->traverse_to = NULL;
     }
 
@@ -984,6 +984,12 @@ static void item_result_free(item_result_t * item)
     {
         g_free(item->path);
         item->path = NULL;
+    }
+
+    if (item->basename)
+    {
+        g_free(item->basename);
+        item->basename = NULL;
     }
 
     if (item->base)
@@ -1497,6 +1503,11 @@ int file_find_set_traverse_to(
         traverse_to = self->current->traverse_to;
 
         self->current->next_traverse_to_idx = 0;
+        
+        for (i = num_children ; i < traverse_to->len ; i++)
+        {
+            g_free(g_ptr_array_index(traverse_to, i));
+        }
 
         g_ptr_array_set_size(traverse_to, num_children);
 
