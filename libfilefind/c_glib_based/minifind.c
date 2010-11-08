@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
 
     while (file_find_next(tree) == FILE_FIND_OK)
     {
-        printf("%s\n", file_find_get_path(tree));
+        puts(file_find_get_path(tree));
     }
 
     if (file_find_free(tree) != FILE_FIND_OK)
