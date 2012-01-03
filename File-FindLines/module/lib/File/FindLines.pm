@@ -6,7 +6,8 @@ use warnings;
 
 =head1 NAME
 
-File::FindLines - The great new File::FindLines!
+File::FindLines - find records out of a stream that match certain qualities.
+(similar to grep(1).)
 
 =head1 VERSION
 
@@ -25,33 +26,54 @@ Perhaps a little code snippet.
 
     use File::FindLines;
 
-    my $foo = File::FindLines->new();
-    ...
+    my ($re_s, $filename) = @ARGV;
 
-=head1 EXPORT
+    my $re = qr/$re_s/;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    open my $fh, '<', $filename
+        or die "Cannot open '$filename'"
+
+    my $finder = File::FindLines->new(
+        {
+            input => { code => sub { return scalar <$fh>; }, },
+            filter => sub {
+                my ($self, $record_obj) = @_;
+                return $record_obj->text_like($re);
+            }, 
+        }
+    );
+
+    while (my $match = $finder->next_text())
+    {
+        print "$match\n";
+    }
+
+    close($fh);
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 new
+
+Initializes a new object.
 
 =cut
 
 sub function1 {
 }
 
-=head2 function2
+=head2 next
+
+Returns a new record as an object.
+
+=head2 next_text
+
+Returns a new record as text.
 
 =cut
 
-sub function2 {
-}
-
 =head1 AUTHOR
 
-Shlomi Fish, C<< <shlomif at cpan.org> >>
+Shlomi Fish, L<http://www.shlomifish.org/>, C<< <shlomif at cpan.org> >> .
 
 =head1 BUGS
 
@@ -59,15 +81,11 @@ Please report any bugs or feature requests to C<bug-file-findlines at rt.cpan.or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-FindLines>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc File::FindLines
-
 
 You can also look for information at:
 
