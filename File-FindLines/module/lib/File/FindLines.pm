@@ -31,10 +31,6 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use File::FindLines;
 
     my ($re_s, $filename) = @ARGV;

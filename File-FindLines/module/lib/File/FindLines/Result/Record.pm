@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-File::FindLines::Result::Record - The great new File::FindLines::Result::Record!
+File::FindLines::Result::Record - a matching record result.
 
 =head1 VERSION
 
@@ -16,38 +16,16 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+Should not be instantiated directly.
 
     use File::FindLines::Result::Record;
 
     my $foo = File::FindLines::Result::Record->new();
     ...
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 

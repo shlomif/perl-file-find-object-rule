@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-File::FindLines::Result::Context - The great new File::FindLines::Result::Context!
+File::FindLines::Result::Context - a context result object.
 
 =head1 VERSION
 
@@ -16,38 +16,9 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use File::FindLines::Result::Context;
-
-    my $foo = File::FindLines::Result::Context->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+Should not be instantiated directly. 
 
 =head1 AUTHOR
 
