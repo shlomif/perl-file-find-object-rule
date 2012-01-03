@@ -52,7 +52,7 @@ TODO: {
   module_boilerplate_ok('lib/File/FindLines.pm');
   module_boilerplate_ok('lib/File/FindLines/Result.pm');
   module_boilerplate_ok('lib/File/FindLines/Result/Context.pm');
-  module_boilerplate_ok('lib/File/FindLines/Result/Record.pm');
+  module_boilerplate_ok('lib/File/FindLines/Result/Match.pm');
 
 
 }

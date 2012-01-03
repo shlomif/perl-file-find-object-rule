@@ -1,4 +1,4 @@
-package File::FindLines::Result::Record;
+package File::FindLines::Result::Match;
 
 use 5.006;
 use strict;
@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-File::FindLines::Result::Record - a matching record result.
+File::FindLines::Result::Match - a matching record result.
 
 =head1 VERSION
 
@@ -20,9 +20,9 @@ our $VERSION = '0.01';
 
 Should not be instantiated directly.
 
-    use File::FindLines::Result::Record;
+    use File::FindLines::Result::Match;
 
-    my $foo = File::FindLines::Result::Record->new();
+    my $foo = File::FindLines::Result::Match->new();
     ...
 
 =head1 SUBROUTINES/METHODS
@@ -44,7 +44,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc File::FindLines::Result::Record
+    perldoc File::FindLines::Result::Match
 
 
 You can also look for information at:
@@ -104,4 +104,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of File::FindLines::Result::Record
+1; # End of File::FindLines::Result::Match
