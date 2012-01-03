@@ -1,8 +1,19 @@
 package File::FindLines;
 
 use 5.006;
+
 use strict;
 use warnings;
+
+use Carp;
+
+use Class::XSAccessor
+    constructor => '_dont_use_me',
+    accessors => {
+        _iter_coderef => '_iter_coderef',
+        _filter_coderef => '_filter_coderef',
+    },
+    ;
 
 =head1 NAME
 
@@ -58,7 +69,29 @@ Initializes a new object.
 
 =cut
 
-sub function1 {
+sub new
+{
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->_init(@_);
+
+    return $self;
+}
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->_iter_coderef($args->{input}->{code})
+        or Carp::confess "No input code ref specified.";
+
+    $self->_filter_coderef($args->{filter})
+        or Carp::confess "No filter code ref specified.";
+
+    return;
 }
 
 =head2 next

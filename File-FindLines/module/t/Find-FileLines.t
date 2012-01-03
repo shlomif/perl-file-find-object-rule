@@ -5,7 +5,17 @@ use warnings;
 
 use Test::More tests => 1;
 
+use File::FindLines;
+
 {
+    my @lines =
+    (
+        "Ini\n",
+        "Mini\n",
+        "Foobar\n",
+        "Moo\n",
+    );
+
     my $finder = File::FindLines->new(
         {
             input => { code => sub { return shift(@lines); } },
