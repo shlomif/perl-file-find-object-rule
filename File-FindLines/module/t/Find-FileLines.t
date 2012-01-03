@@ -20,7 +20,10 @@ use File::FindLines;
         {
             input => { code => sub { return shift(@lines); } },
             filter => sub {
-                my ($self, $record_obj) = @_;
+                my ($self, $args) = @_;
+                
+                my $record_obj = $args->{record};
+
                 return $record_obj->text_like(qr/foob.r/);
             },
         }

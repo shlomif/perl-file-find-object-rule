@@ -48,7 +48,10 @@ Perhaps a little code snippet.
         {
             input => { code => sub { return scalar <$fh>; }, },
             filter => sub {
-                my ($self, $record_obj) = @_;
+                my ($self, $args) = @_;
+
+                my $record_obj = $args->{record};
+
                 return $record_obj->text_like($re);
             }, 
         }
