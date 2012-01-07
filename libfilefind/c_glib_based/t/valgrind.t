@@ -36,7 +36,8 @@ sub test_using_valgrind
     }
     close ($read_from_valgrind);
 
-    if (ok (($found_error_summary && $found_malloc_free), $blurb))
+    # if (ok (($found_error_summary && $found_malloc_free), $blurb))
+    if (ok (($found_error_summary), $blurb))
     {
         unlink($log_fn);
         unlink($out_file);
