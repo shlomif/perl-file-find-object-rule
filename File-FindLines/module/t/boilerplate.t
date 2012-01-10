@@ -49,10 +49,10 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/File/FindLines.pm');
-  module_boilerplate_ok('lib/File/FindLines/Result.pm');
-  module_boilerplate_ok('lib/File/FindLines/Result/Context.pm');
-  module_boilerplate_ok('lib/File/FindLines/Result/Match.pm');
+  module_boilerplate_ok('lib/Stream/Extract.pm');
+  module_boilerplate_ok('lib/Stream/Extract/Result.pm');
+  module_boilerplate_ok('lib/Stream/Extract/Result/Context.pm');
+  module_boilerplate_ok('lib/Stream/Extract/Result/Match.pm');
 
 
 }

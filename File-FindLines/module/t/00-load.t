@@ -3,10 +3,10 @@
 use Test::More tests => 4;
 
 BEGIN {
-    use_ok( 'File::FindLines' ) || print "Bail out!\n";
-    use_ok( 'File::FindLines::Result' ) || print "Bail out!\n";
-    use_ok( 'File::FindLines::Result::Context' ) || print "Bail out!\n";
-    use_ok( 'File::FindLines::Result::Record' ) || print "Bail out!\n";
+    use_ok( 'Stream::Extract' ) || print "Bail out!\n";
+    use_ok( 'Stream::Extract::Result' ) || print "Bail out!\n";
+    use_ok( 'Stream::Extract::Result::Context' ) || print "Bail out!\n";
+    use_ok( 'Stream::Extract::Result::Match' ) || print "Bail out!\n";
 }
 
-diag( "Testing File::FindLines $File::FindLines::VERSION, Perl $], $^X" );
+diag( "Testing Stream::Extract $Stream::Extract::VERSION, Perl $], $^X" );

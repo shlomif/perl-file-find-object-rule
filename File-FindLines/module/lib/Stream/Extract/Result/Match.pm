@@ -1,4 +1,4 @@
-package File::FindLines::Result;
+package Stream::Extract::Result::Match;
 
 use 5.006;
 use strict;
@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-File::FindLines::Result - An abstract File::FindLines Result object.
+Stream::Extract::Result::Match - a matching record result.
 
 =head1 VERSION
 
@@ -16,13 +16,14 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
-Should not be used directly - API is subject to change.
-    use File::FindLines::Result;
+Should not be instantiated directly.
 
-    my $foo = File::FindLines::Result->new();
+    use Stream::Extract::Result::Match;
+
+    my $foo = Stream::Extract::Result::Match->new();
+    ...
 
 =head1 SUBROUTINES/METHODS
 
@@ -32,8 +33,8 @@ Shlomi Fish, C<< <shlomif at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-file-findlines at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-FindLines>.  I will be notified, and then you'll
+Please report any bugs or feature requests to C<bug-stream-extract at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Stream-Extract>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 
@@ -43,7 +44,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc File::FindLines::Result
+    perldoc Stream::Extract::Result::Match
 
 
 You can also look for information at:
@@ -52,19 +53,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=File-FindLines>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Stream-Extract>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/File-FindLines>
+L<http://annocpan.org/dist/Stream-Extract>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/File-FindLines>
+L<http://cpanratings.perl.org/d/Stream-Extract>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/File-FindLines/>
+L<http://search.cpan.org/dist/Stream-Extract/>
 
 =back
 
@@ -103,4 +104,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of File::FindLines::Result
+1; # End of Stream::Extract::Result::Match

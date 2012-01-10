@@ -1,4 +1,4 @@
-File-FindLines
+Stream-Extract
 
 This is a module to filter a stream of records for those matching certain
 criteria (normally lines in files, similar to grep(1), but not restricted to
@@ -18,21 +18,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc File::FindLines
+    perldoc Stream::Extract
 
 You can also look for information at:
 
     RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=File-FindLines
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Stream-Extract
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/File-FindLines
+        http://annocpan.org/dist/Stream-Extract
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/File-FindLines
+        http://cpanratings.perl.org/d/Stream-Extract
 
     Search CPAN
-        http://search.cpan.org/dist/File-FindLines/
+        http://search.cpan.org/dist/Stream-Extract/
 
 
 LICENSE AND COPYRIGHT

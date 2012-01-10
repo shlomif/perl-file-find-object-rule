@@ -8,17 +8,17 @@ use lib "./inc";
 use Test::Run::Builder;
 
 my $builder = Test::Run::Builder->new(
-    module_name         => 'File::FindLines',
+    module_name         => 'Stream::Extract',
     license             => 'mit',
     dist_author         => q{Shlomi Fish <shlomif@cpan.org>},
-    dist_version_from   => 'lib/File/FindLines.pm',
+    dist_version_from   => 'lib/Stream/Extract.pm',
     build_requires => {
         'Test::More' => 0,
     },
     requires => {
         'perl' => 5.006,
     },
-    add_to_cleanup      => [ 'File-FindLines-*' ],
+    add_to_cleanup      => [ 'Stream-Extract-*' ],
     create_makefile_pl => 'traditional',
 );
 

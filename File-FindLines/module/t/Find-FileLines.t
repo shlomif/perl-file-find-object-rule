@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More tests => 1;
 
-use File::FindLines;
+use Stream::Extract;
 
 {
     my @lines =
@@ -16,7 +16,7 @@ use File::FindLines;
         "Moo\n",
     );
 
-    my $finder = File::FindLines->new(
+    my $finder = Stream::Extract->new(
         {
             input => { code => sub { return shift(@lines); } },
             filter => sub {
