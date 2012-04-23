@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 41;
+use Test::More tests => 42;
 
 use lib './t/lib';
 
@@ -150,6 +150,23 @@ $f = $class->name( qr/\.t$/ );
 is_deeply( _run_find($f),
            [ @tests ],
            "name( qr/\\.t\$/ )" );
+
+{
+    # This test that starts returns the rule object.
+    # See: http://www.nntp.perl.org/group/perl.beginners/2012/04/msg120670.html
+    my $rule = $class->name( qr/\.t$/ )->start($copy_fn);
+
+    my @results;
+    while (my $item = $rule->match()) {
+        push @results, $item;
+    }
+    # TEST
+    is_deeply(
+        [ @results ],
+        [ @tests ],
+        "->start() Test."
+    );
+}
 
 $f = $class->name( 'foobar' );
 # TEST

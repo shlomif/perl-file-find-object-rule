@@ -704,7 +704,7 @@ sub start {
     $self->_match_cb($callback);
     $self->_call_find(\@paths);
 
-    return 1;
+    return $self;
 }
 
 
