@@ -14,7 +14,7 @@ use File::Find::Object; # we're only wrapping for now
 use File::Basename;
 use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
 
-$VERSION = '0.0300';
+$VERSION = '0.0301';
 
 use Class::XSAccessor
     accessors => {
@@ -704,7 +704,7 @@ sub start {
     $self->_match_cb($callback);
     $self->_call_find(\@paths);
 
-    return 1;
+    return $self;
 }
 
 

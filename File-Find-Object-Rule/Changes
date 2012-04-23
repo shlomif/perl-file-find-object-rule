@@ -1,6 +1,12 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+0.0301      Mon Apr 23 10:31:45 IDT 2012
+    - Made ->start() return itself. Bug was reported here:
+        - http://www.nntp.perl.org/group/perl.beginners/2012/04/msg120670.html
+        - it previously returned only 1.
+        - Add a test for ->start() for the next time.
+
 0.0300      Fri Jun 26 01:12:27 IDT 2009
     - Adapted the README to File-Find-Object-Rule.
     - Added POD tests and got to full POD coverage.
