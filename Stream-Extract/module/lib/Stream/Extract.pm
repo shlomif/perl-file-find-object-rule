@@ -49,7 +49,7 @@ our $VERSION = '0.01';
                 my $record_obj = $args->{record};
 
                 return $record_obj->text_like($re);
-            }, 
+            },
         }
     );
 
