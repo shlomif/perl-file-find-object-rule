@@ -4,8 +4,7 @@
 use strict;
 use warnings;
 
-use File::Spec;
-use lib File::Spec->catdir(File::Spec->curdir(), "inc");
+use lib "./inc";
 
 use Test::Run::Builder;
 
@@ -34,7 +33,7 @@ my $build = Test::Run::Builder->new(
     {
         resources =>
         {
-            repository => "http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/",
+            repository => "http://bitbucket.org/shlomif/perl-file-find-object-rule",
             homepage => "http://www.shlomifish.org/open-source/projects/File-Find-Object/",
         },
         keywords =>
