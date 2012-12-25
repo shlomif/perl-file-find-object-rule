@@ -1,8 +1,11 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
-0.0302
+0.0302      Tue 25 Dec 22:35:01 IST 2012
     - Update the repository URL.
+    - Link to the Path::Class::Rule overview of directory traversal
+    modules on the POD.
+    - The “Evil Reindeer Evil Christmas Evil Conspiracy” Release. ;-)
 
 0.0301      Mon Apr 23 10:31:45 IDT 2012
     - Made ->start() return itself. Bug was reported here:

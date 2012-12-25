@@ -12,6 +12,9 @@ my $build = Test::Run::Builder->new(
     module_name => "File::Find::Object::Rule",
     license     => 'perl',
     script_files => [ 'scripts/findorule' ],
+    configure_requires => {
+        'Module::Build' => '0.36',
+    },
     requires    => {
         'Carp'               => 0,
         'Class::XSAccessor'  => 0,
