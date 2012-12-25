@@ -14,7 +14,7 @@ use File::Find::Object; # we're only wrapping for now
 use File::Basename;
 use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
 
-$VERSION = '0.0301';
+$VERSION = '0.0302';
 
 use Class::XSAccessor
     accessors => {
@@ -43,6 +43,8 @@ sub import {
         croak "couldn't bootstrap File::Find::Object::Rule::$extension: $@" if $@;
     }
 }
+
+=encoding utf8
 
 =head1 NAME
 
@@ -1029,12 +1031,16 @@ L<File::Find::Object>, L<Text::Glob>, L<Number::Compare>, find(1)
 
 If you want to know about the procedural interface, see
 L<File::Find::Object::Rule::Procedural>, and if you have an idea for a neat
-extension L<File::Find::Object::Rule::Extending>
+extension, see  L<File::Find::Object::Rule::Extending> .
+
+L<Path::Class::Rule> ’s SEE ALSO contains a review of many directory traversal
+modules on CPAN, including L<File::Find::Object::Rule> and L<File::Find::Rule>
+(on which this module is based).
 
 =head1 KNOWN BUGS
 
-The tests don't run successfully when directly inside a Subversion checkout,
-due to the presence of C<.svn> directories. C<./Build disttest> or
+The tests don't run successfully when directly inside an old Subversion
+checkout, due to the presence of C<.svn> directories. C<./Build disttest> or
 C<./Build distruntest> run fine.
 
 =cut

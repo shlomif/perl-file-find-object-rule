@@ -1,6 +1,9 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+0.0302
+    - Update the repository URL.
+
 0.0301      Mon Apr 23 10:31:45 IDT 2012
     - Made ->start() return itself. Bug was reported here:
         - http://www.nntp.perl.org/group/perl.beginners/2012/04/msg120670.html
