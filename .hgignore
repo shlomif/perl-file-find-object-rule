@@ -13,3 +13,7 @@ File-Find-Object-Rule/MYMETA.yml
 File-Find-Object-Rule/Makefile.PL
 File-Find-Object-Rule/_build
 File-Find-Object-Rule/blib
+
+syntax: regexp
+
+^File-Find-Object-Rule/File-Find-Object-Rule-0.0302.tar.gz\d+\.\d+(?:/|\.tar\.gz$)
