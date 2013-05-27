@@ -1,6 +1,8 @@
 ChangeLog for File-Find-Object-Rule:
 ------------------------------------
 
+    - Remove trailing space.
+
 0.0302      Tue 25 Dec 22:35:01 IST 2012
     - Update the repository URL.
     - Link to the Path::Class::Rule overview of directory traversal
@@ -26,8 +28,8 @@ ChangeLog for File-Find-Object-Rule:
     File-Find-Object-Rule .
 
 0.0200      Sun Mar  1 22:24:21 IST 2009
-    - hopefully got rid of all UNIXisms (and incompatibilities with Win32), and 
-    problems such as running when having temporary files (*~) in the test 
+    - hopefully got rid of all UNIXisms (and incompatibilities with Win32), and
+    problems such as running when having temporary files (*~) in the test
     files:
         - now holding a pristine copy of the test tree under
             ./t/sample-data/to-copy-from/
@@ -35,7 +37,7 @@ ChangeLog for File-Find-Object-Rule:
         which was borrowed from the File::Find::Object code.
         - Converted all the paths constant to variables, which are generated
         using $tree_creator->get_path().
-        - Removed some non-portable assertions or ones that are hard to 
+        - Removed some non-portable assertions or ones that are hard to
         reproduce with File::Spec.
         - Added Test::Count annotations to the tests' code.
 
@@ -51,7 +53,7 @@ ChangeLog for File-Find-Rule:
 -----------------------------
 
 0.30 Wednesday 1st June, 2006
-	Made './//././././///.//././/////./blah' be treated the same 
+	Made './//././././///.//././/////./blah' be treated the same
         as './blah' (it gets turned into 'blah')
 
 0.29 Tuesday 16th May, 2006
@@ -94,7 +96,7 @@ ChangeLog for File-Find-Rule:
 0.22 Friday 3rd October, 2003
 	add in ->extras hash for passing things through to File::Find::find
 
-0.21 Monday 15th September, 2003 
+0.21 Monday 15th September, 2003
 	pod glitch in File::Find::Rule::Procedural spotted and fixed
 	by Tom Hukins
 
@@ -127,7 +129,7 @@ ChangeLog for File-Find-Rule:
 0.10	10th March 2003
 	- fixup an accidental warning in the stat-based tests.  Caught
 	  by Alex Gough (rt.cpan.org #2138)
-	- make the findrule tests more win32 safe/shell independent (picked 
+	- make the findrule tests more win32 safe/shell independent (picked
 	  up by Philip Newton)
 	- autogenerate READMEs from bits and pieces
 

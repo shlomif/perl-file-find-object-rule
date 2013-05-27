@@ -66,7 +66,7 @@ under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<File::Find::Object>, L<Text::Glob>, L<Number::Compare>, 
+L<File::Find::Object>, L<Text::Glob>, L<Number::Compare>,
 L<File::Find::Object::Rule>, find(1)
 
 If you want to know about the procedural interface, see

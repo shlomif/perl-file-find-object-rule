@@ -24,7 +24,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                 'contents' => $tree_creator->cat(
                     "./t/sample-data/to-copy-from/File-Find-Rule.t"
                 ),
-            },            
+            },
             {
                 'name' => "findorule.t",
                 'contents' => $tree_creator->cat(
@@ -36,7 +36,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                 'contents' => $tree_creator->cat(
                     "./t/sample-data/to-copy-from/foobar"
                 ),
-                
+
             },
             {
                 'name' => "lib/",
@@ -67,7 +67,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
 content => $tree_creator->cat(
     "./t/sample-data/to-copy-from/lib/File/Find/Object/Rule/Test/ATeam.pm"
 
-), 
+),
 }
                                                         ],
                                                     },
@@ -135,7 +135,7 @@ is_deeply(run $copy_fn . ' -maxdepth 0 -directory',
               [ $foobar_fn ], 'grouping ( -literal )');
 }
 
-# Remming out due to capturing STDERR using unixisms. In the future, we 
+# Remming out due to capturing STDERR using unixisms. In the future, we
 # may implement this using Test::Trap.
 # is_deeply(run $copy_fn . ' -file -name foobar baz',
 #          [ "unknown option 'baz'" ], 'no implicit grouping');

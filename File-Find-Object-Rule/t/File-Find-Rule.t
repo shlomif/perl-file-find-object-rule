@@ -25,7 +25,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                 'contents' => $tree_creator->cat(
                     "./t/sample-data/to-copy-from/File-Find-Rule.t"
                 ),
-            },            
+            },
             {
                 'name' => "findorule.t",
                 'contents' => $tree_creator->cat(
@@ -37,7 +37,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                 'contents' => $tree_creator->cat(
                     "./t/sample-data/to-copy-from/foobar"
                 ),
-                
+
             },
             {
                 'name' => "lib/",
@@ -68,7 +68,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
 content => $tree_creator->cat(
     "./t/sample-data/to-copy-from/lib/File/Find/Object/Rule/Test/ATeam.pm"
 
-), 
+),
 }
                                                         ],
                                                     },
@@ -111,14 +111,14 @@ my @tests = ($FFR_t, $findorule_t);
 
 my @ateam_path =
     map { $tree_creator->get_path("./t/sample-data/copy-to/$_") }
-    qw( 
+    qw(
         lib
         lib/File
         lib/File/Find
         lib/File/Find/Object
         lib/File/Find/Object/Rule
         lib/File/Find/Object/Rule/Test
-        lib/File/Find/Object/Rule/Test/ATeam.pm 
+        lib/File/Find/Object/Rule/Test/ATeam.pm
     );
 
 my $ATeam_pm_fn = $ateam_path[-1];

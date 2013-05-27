@@ -72,11 +72,11 @@ File::Find::Object::Rule - Alternative interface to File::Find::Object
 File::Find::Object::Rule is a friendlier interface to L<File::Find::Object> .
 It allows you to build rules which specify the desired files and directories.
 
-B<WARNING> : This module is a fork of version 0.30 of L<File::Find::Rule> 
-(which has been unmaintained for several years as of February, 2009), and may 
-still have some bugs due to its reliance on File::Find'isms. As such it is 
-considered Alpha software. Please report any problems with 
-L<File::Find::Object::Rule> to its RT CPAN Queue. 
+B<WARNING> : This module is a fork of version 0.30 of L<File::Find::Rule>
+(which has been unmaintained for several years as of February, 2009), and may
+still have some bugs due to its reliance on File::Find'isms. As such it is
+considered Alpha software. Please report any problems with
+L<File::Find::Object::Rule> to its RT CPAN Queue.
 
 =cut
 
@@ -133,7 +133,7 @@ sub new {
     my $referent = shift;
     my $class = ref $referent || $referent;
 
-    return 
+    return
     bless {
         rules    => [],  # [0]
         _subs     => [],  # [1]
@@ -423,7 +423,7 @@ sub discard () {
 
 =item C<exec( \&subroutine( $shortname, $path, $fullname ) )>
 
-Allows user-defined rules.  Your subroutine will be invoked with parameters of 
+Allows user-defined rules.  Your subroutine will be invoked with parameters of
 the name, the path you're in, and the full relative filename.
 In addition, C<$_> is set to the current short name, but its use is
 discouraged since as opposed to File::Find::Rule, File::Find::Object::Rule
@@ -665,7 +665,7 @@ sub start {
     my $code = 'sub {
         my $path_obj = shift;
         my $path = shift;
-        
+
         if (!defined($path_obj))
         {
             return;
@@ -730,7 +730,7 @@ sub match {
         {
             $finder->set_traverse_to(
                 $preproc_cb->(
-                        $self, 
+                        $self,
                         [ @{$finder->get_current_node_files_list()} ]
                 )
             );
@@ -987,7 +987,7 @@ Corresponds to C<-k>.
 
 Corresponds to C<-l>.
 
-=head2 uid 
+=head2 uid
 
 See "stat tests".
 
