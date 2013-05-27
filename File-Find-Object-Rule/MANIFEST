@@ -4,7 +4,6 @@ inc/Test/Run/Builder.pm
 lib/File/Find/Object/Rule/Extending.pod
 lib/File/Find/Object/Rule.pm
 lib/File/Find/Object/Rule/Procedural.pod
-Makefile.PL
 MANIFEST
 META.yml
 README

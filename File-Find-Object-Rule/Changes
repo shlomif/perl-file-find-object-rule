@@ -3,6 +3,7 @@ Changes Log for File-Find-Object-Rule:
 
 0.0303      Mon 27 May 17:52:15 IDT 2013
     - Remove trailing space.
+    - Remove Makefile.PL - use Build.PL from now on.
 
 0.0302      Tue 25 Dec 22:35:01 IST 2012
     - Update the repository URL.

@@ -31,7 +31,6 @@ my $build = Test::Run::Builder->new(
     build_requires => {
         'Test::More'      => 0,
     },
-    create_makefile_pl => 'traditional',
     meta_merge =>
     {
         resources =>
