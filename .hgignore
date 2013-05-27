@@ -16,4 +16,4 @@ File-Find-Object-Rule/blib
 
 syntax: regexp
 
-^File-Find-Object-Rule/File-Find-Object-Rule-0.0302.tar.gz\d+\.\d+(?:/|\.tar\.gz$)
+^File-Find-Object-Rule/File-Find-Object-Rule-\d+\.\d+(?:/|\.tar\.gz$)
