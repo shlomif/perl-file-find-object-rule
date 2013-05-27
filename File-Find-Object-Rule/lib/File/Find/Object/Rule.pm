@@ -348,8 +348,8 @@ sub any {
         rule => 'any',
         code => '(' . join( ' || ', map {
             "( " . $_->_compile($self->_subs()) . " )"
-        } @_ ) . ")",
-        args => \@_,
+        } @rulesets ) . ")",
+        args => \@rulesets,
     });
     $self;
 }
