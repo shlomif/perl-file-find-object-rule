@@ -3,6 +3,7 @@ Changes Log for File-Find-Object-Rule:
 
 0.0304      Wed 29 Jan 13:24:04 IST 2014
     - Add a separate LICENSE file (CPANTS Kwalitee).
+    - Specify minimal version of Perl as 5.8.x (CPANTS Kwalitee).
 
 0.0303      Mon 27 May 17:52:15 IDT 2013
     - Remove trailing space.
