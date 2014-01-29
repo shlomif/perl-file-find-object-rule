@@ -23,6 +23,7 @@ my $build = Test::Run::Builder->new(
         'File::Find::Object' => '0.2.1',
         'File::Spec'         => 0,
         'Number::Compare'    => 0,
+        'perl'               => '5.008',
         'strict'             => 0,
         'Text::Glob'         => 0,
         'vars'               => 0,

@@ -5,6 +5,8 @@ package File::Find::Object::Rule;
 use strict;
 use warnings;
 
+use 5.008;
+
 use vars qw/$VERSION $AUTOLOAD/;
 use File::Spec;
 use Text::Glob 'glob_to_regex';
