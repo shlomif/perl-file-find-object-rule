@@ -4,6 +4,7 @@ inc/Test/Run/Builder.pm
 lib/File/Find/Object/Rule/Extending.pod
 lib/File/Find/Object/Rule.pm
 lib/File/Find/Object/Rule/Procedural.pod
+LICENSE
 MANIFEST
 META.yml
 README
