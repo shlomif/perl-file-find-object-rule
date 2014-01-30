@@ -1,11 +1,13 @@
 Build.PL
 Changes
-inc/Test/Run/Builder.pm
-lib/File/Find/Object/Rule/MMagic.pm
-Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.yml
+Makefile.PL
 README
+inc/Test/Run/Builder.pm
+lib/File/Find/Object/Rule/MMagic.pm
 t/File-Find-Object-Rule-MMagic.t
 t/happy-baby.JPG
+t/style-trailing-space.t
+META.json
