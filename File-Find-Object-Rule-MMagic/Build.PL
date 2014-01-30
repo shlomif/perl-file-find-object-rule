@@ -13,10 +13,16 @@ my $build = Test::Run::Builder->new(
     module_name => "File::Find::Object::Rule::MMagic",
     license     => 'perl',
     dist_author => 'Shlomi Fish <shlomif@cpan.org>',
+    configure_requires =>
+    {
+        'Module::Build' => 0.36,
+    },
     requires    => {
         'Text::Glob' => 0,
         'File::Find::Object::Rule' => 0,
         'File::MMagic' => 0,
+        'perl' => 0,
+        'strict' => 0,
         'vars'               => 0,
         'warnings'           => 0,
     },

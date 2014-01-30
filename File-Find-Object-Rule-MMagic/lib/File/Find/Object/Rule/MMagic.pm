@@ -4,6 +4,8 @@ package File::Find::Object::Rule::MMagic;
 use strict;
 use warnings;
 
+use 5.008;
+
 use File::Find::Object::Rule;
 use base qw( File::Find::Object::Rule );
 use vars qw( $VERSION @EXPORT );
