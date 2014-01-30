@@ -6,7 +6,9 @@ Makefile.PL
 MANIFEST.SKIP
 MANIFEST			This list of files
 META.yml
+README
 t/01_compile.t
 t/02_main.t
 t/pod-coverage.t
 t/pod.t
+META.json
