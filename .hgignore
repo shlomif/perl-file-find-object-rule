@@ -6,6 +6,14 @@ File-Find-Object-Rule-MMagic/MYMETA.json
 File-Find-Object-Rule-MMagic/MYMETA.yml
 File-Find-Object-Rule-MMagic/_build
 File-Find-Object-Rule-MMagic/blib
+File-Find-Object-Rule-VCS/Build
+File-Find-Object-Rule-VCS/Makefile.PL
+File-Find-Object-Rule-VCS/META.json
+File-Find-Object-Rule-VCS/META.yml
+File-Find-Object-Rule-VCS/MYMETA.json
+File-Find-Object-Rule-VCS/MYMETA.yml
+File-Find-Object-Rule-VCS/_build
+File-Find-Object-Rule-VCS/blib
 File-Find-Object-Rule/Build
 File-Find-Object-Rule/META.json
 File-Find-Object-Rule/META.yml
@@ -24,3 +32,4 @@ Stream-Extract/module/blib
 syntax: regexp
 
 ^File-Find-Object-Rule/File-Find-Object-Rule-\d+\.\d+(?:/|\.tar\.gz$)
+^File-Find-Object-Rule-VCS/File-Find-Object-Rule-VCS-v\d+\.\d+\.\d+(?:/|\.tar\.gz$)
