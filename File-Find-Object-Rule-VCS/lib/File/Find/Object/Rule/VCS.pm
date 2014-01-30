@@ -55,7 +55,7 @@ ignore methods
 
 =cut
 
-use 5.00503;
+use 5.008;
 
 use strict;
 use warnings;
