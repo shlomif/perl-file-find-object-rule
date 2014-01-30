@@ -30,7 +30,7 @@ name: File-Find-Object-Rule-VCS
 provides:
   File::Find::Object::Rule::VCS:
     file: lib/File/Find/Object/Rule/VCS.pm
-    version: v0.0.2
+    version: v0.0.3
 requires:
   Carp: 0
   File::Find::Object::Rule: 0
@@ -44,7 +44,7 @@ resources:
   homepage: http://www.shlomifish.org/open-source/projects/File-Find-Object/
   license: http://dev.perl.org/licenses/
   repository: http://svn.berlios.de/svnroot/repos/web-cpan/File-Find-Object/
-version: v0.0.2
+version: v0.0.3
 x_test_requires:
   File::Spec: 0.82
   Test::More: 0.47
