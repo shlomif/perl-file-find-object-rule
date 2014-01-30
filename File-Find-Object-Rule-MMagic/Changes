@@ -2,6 +2,7 @@
     - Minimal version of perl.
     - Add t/style-trailing-space.t , t/pod.t , t/pod-coverage.t and
     t/cpan-changes.t .
+    - Add the "LICENSE" file.
 
 0.0.2   Fri Mar 26 15:50:34 IDT 2010
     - Fixed t/File-Find-Object-Rule-MMagic.t on MSWin32 (used File::Spec).
