@@ -21,6 +21,7 @@ my $build = Test::Run::Builder->new(
         'Text::Glob' => 0,
         'File::Find::Object::Rule' => 0,
         'File::MMagic' => 0,
+        'parent' => 0,
         'perl' => '5.008',
         'strict' => 0,
         'vars'               => 0,

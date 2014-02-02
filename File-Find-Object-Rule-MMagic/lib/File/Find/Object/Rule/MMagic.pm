@@ -7,10 +7,10 @@ use warnings;
 use 5.008;
 
 use File::Find::Object::Rule;
-use base qw( File::Find::Object::Rule );
+use parent qw( File::Find::Object::Rule );
 use vars qw( $VERSION @EXPORT );
 @EXPORT  = @File::Find::Object::Rule::EXPORT;
-$VERSION = '0.0.3';
+$VERSION = '0.0.4';
 
 use File::MMagic;
 use Text::Glob qw(glob_to_regex);
