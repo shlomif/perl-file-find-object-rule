@@ -89,7 +89,7 @@ sub set_current {
     $self->{_current} = $current;
 }
 
-# Return true if there is somthing next
+# Return true if there is something next
 sub _process_current {
     my ($self) = @_;
    
