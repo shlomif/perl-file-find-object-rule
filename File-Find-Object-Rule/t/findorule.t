@@ -16,7 +16,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
 {
     my $tree =
     {
-        'name' => "copy-to/",
+        'name' => "findorule-t-copy-to/",
         'subs' =>
         [
             {
@@ -99,17 +99,17 @@ sub run ($) {
 }
 
 my $copy_fn = $tree_creator->get_path(
-    "./t/sample-data/copy-to/"
+    "./t/sample-data/findorule-t-copy-to/"
 );
 
 my $FFR_t = $tree_creator->get_path(
-    "./t/sample-data/copy-to/File-Find-Rule.t"
+    "./t/sample-data/findorule-t-copy-to/File-Find-Rule.t"
 );
 my $findorule_t = $tree_creator->get_path(
-    "./t/sample-data/copy-to/findorule.t"
+    "./t/sample-data/findorule-t-copy-to/findorule.t"
 );
 my $foobar_fn = $tree_creator->get_path(
-    "./t/sample-data/copy-to/foobar"
+    "./t/sample-data/findorule-t-copy-to/foobar"
 );
 
 # TEST

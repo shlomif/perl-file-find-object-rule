@@ -1,6 +1,10 @@
 Changes Log for File-Find-Object-Rule:
 --------------------------------------
 
+0.0305      Sun 18 May 14:10:09 IDT 2014
+    - Made the tests succeed if run in parallel (e.g:
+    HARNESS_OPTIONS="j4:c" ).
+
 0.0304      Wed 29 Jan 13:24:04 IST 2014
     - Add a separate LICENSE file (CPANTS Kwalitee).
     - Specify minimal version of Perl as 5.8.x (CPANTS Kwalitee).

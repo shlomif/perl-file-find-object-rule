@@ -17,7 +17,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
 {
     my $tree =
     {
-        'name' => "copy-to/",
+        'name' => "FFRt-to/",
         'subs' =>
         [
             {
@@ -90,27 +90,27 @@ content => $tree_creator->cat(
 
 my $class;
 my $copy_fn = $tree_creator->get_path(
-    "./t/sample-data/copy-to/"
+    "./t/sample-data/FFRt-to/"
 );
 
 my $lib_fn = $tree_creator->get_path(
-    "./t/sample-data/copy-to/lib/"
+    "./t/sample-data/FFRt-to/lib/"
 );
 
 my $FFR_t = $tree_creator->get_path(
-    "./t/sample-data/copy-to/File-Find-Rule.t"
+    "./t/sample-data/FFRt-to/File-Find-Rule.t"
 );
 my $findorule_t = $tree_creator->get_path(
-    "./t/sample-data/copy-to/findorule.t"
+    "./t/sample-data/FFRt-to/findorule.t"
 );
 my $foobar_fn = $tree_creator->get_path(
-    "./t/sample-data/copy-to/foobar"
+    "./t/sample-data/FFRt-to/foobar"
 );
 
 my @tests = ($FFR_t, $findorule_t);
 
 my @ateam_path =
-    map { $tree_creator->get_path("./t/sample-data/copy-to/$_") }
+    map { $tree_creator->get_path("./t/sample-data/FFRt-to/$_") }
     qw(
         lib
         lib/File
@@ -474,4 +474,4 @@ is ($@, "",  "if you can find them, maybe you can hire the A-Team" );
 # TEST
 can_ok( $class, 'ba' );
 
-rmtree($tree_creator->get_path("./t/sample-data/copy-to"));
+rmtree($tree_creator->get_path("./t/sample-data/FFRt-to"));
