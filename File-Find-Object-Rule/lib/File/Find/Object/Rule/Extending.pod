@@ -36,7 +36,7 @@ is now possibile to extend it, using the following conventions.
 
     # take useful things from File::Find::Object::Rule
     use base 'File::Find::Object::Rule';
- 
+
 =head3 Force your madness into the main package
 
     # and force our crack into the main namespace
