@@ -29,7 +29,7 @@ upload: html-xsl
 edit:
 	gvim $(DOC).xml style.css Summary.txt
 
-IMAGES_PROTO = 
+IMAGES_PROTO =
 
 IMAGES = $(patsubst images/%,%,$(IMAGES_PROTO))
 
