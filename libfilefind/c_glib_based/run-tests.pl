@@ -38,7 +38,7 @@ GetOptions(
         )
         ;
 
-    local $ENV{HARNESS_PLUGINS} = 
+    local $ENV{HARNESS_PLUGINS} =
         "ColorSummary ColorFileVerdicts AlternateInterpreters"
         ;
 
@@ -50,7 +50,7 @@ GetOptions(
     # Put the valgrind test last because it takes a long time.
     my @tests =
         sort
-        { 
+        {
             (($a =~ /valgrind/) <=> ($b =~ /valgrind/))
                 ||
             ($a cmp $b)

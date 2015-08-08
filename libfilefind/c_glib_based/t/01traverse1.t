@@ -25,7 +25,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },

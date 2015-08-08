@@ -1,10 +1,10 @@
 /*
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -
@@ -80,7 +80,7 @@ struct path_component_struct
     gint next_traverse_to_idx;
     GTree * inodes;
     status_t (*move_next)(
-        struct path_component_struct * self, 
+        struct path_component_struct * self,
         struct file_finder_struct * top
     );
 };
@@ -296,9 +296,9 @@ static status_t path_component_calc_dir_files(
             }
             g_ptr_array_add(files, fn_copy);
         }
-        
+
         g_dir_close(handle);
-        
+
 #if 0
         g_ptr_array_sort(files, indirect_lexic_compare);
 #endif
@@ -339,7 +339,7 @@ static status_t path_component_set_up_dir(
         return FILEFIND_STATUS_OUT_OF_MEM;
     }
     self->next_traverse_to_idx = 0;
-    
+
     self->open_dir_ret = TRUE;
 
     return FILEFIND_STATUS_OK;
@@ -474,7 +474,7 @@ static GCC_INLINE path_component_t * file_finder_current_father(
 }
 
 static status_t deep_path_move_next(
-    path_component_t * self, 
+    path_component_t * self,
     file_finder_t * top)
 {
     path_component_t * current_father;
@@ -502,7 +502,7 @@ static status_t deep_path_move_next(
 
     {
         gchar * prev, * new_elem;
-        
+
         prev = g_ptr_array_index(top->curr_comps, top->curr_comps->len-1);
 
         if (prev)
@@ -517,7 +517,7 @@ static status_t deep_path_move_next(
         {
             return FILEFIND_STATUS_OUT_OF_MEM;
         }
-        g_ptr_array_index(top->curr_comps, top->curr_comps->len-1) = new_elem; 
+        g_ptr_array_index(top->curr_comps, top->curr_comps->len-1) = new_elem;
     }
 
     file_finder_calc_curr_path(top);
@@ -593,7 +593,7 @@ static status_t path_component_insert_inode_into_tree(
 
         g_tree_insert(
             find,
-            g_memdup(&data, sizeof(data)), 
+            g_memdup(&data, sizeof(data)),
             g_memdup(&depth, sizeof(depth))
         );
     }
@@ -656,7 +656,7 @@ static path_component_t * deep_path_new(
 }
 
 static status_t top_path_move_next(
-    path_component_t * self, 
+    path_component_t * self,
     file_finder_t * top)
 {
     status_t status;
@@ -762,7 +762,7 @@ static void path_component_free(path_component_t * self)
         g_tree_destroy(self->inodes);
         self->inodes = NULL;
     }
-    
+
     g_free(self);
 
     return;
@@ -789,7 +789,7 @@ int file_find_new(file_find_handle_t * * output_handle, const char * first_targe
         goto cleanup;
     }
 
-    /*  
+    /*
      * The *existence* of an _st key inside the struct
      * indicates that the stack is full.
      * So now it's empty.
@@ -856,7 +856,7 @@ int file_find_new(file_find_handle_t * * output_handle, const char * first_targe
     return FILE_FIND_OK;
 
 cleanup:
-    
+
     if (top_path)
     {
         path_component_free(top_path);
@@ -898,22 +898,22 @@ static void file_finder_calc_default_actions(file_finder_t * self)
     }
     else
     {
-        self->def_actions[0] = calc_obj; 
-        self->def_actions[1] = ACTION_RECURSE; 
+        self->def_actions[0] = calc_obj;
+        self->def_actions[1] = ACTION_RECURSE;
     }
 
     return;
 }
 
 void file_find_set_callback(
-    file_find_handle_t * handle, 
+    file_find_handle_t * handle,
     void (*callback)(const char * filename, void * context)
 )
 {
     file_finder_t * self;
 
     self = (file_finder_t *)handle;
-   
+
     self->callback = callback;
 
     file_finder_calc_default_actions(self);
@@ -929,7 +929,7 @@ void file_find_set_should_traverse_depth_first(
     file_finder_t * self;
 
     self = (file_finder_t *)handle;
-   
+
     self->should_traverse_depth_first = should_traverse_depth_first;
 
     file_finder_calc_default_actions(self);
@@ -942,10 +942,10 @@ static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
     return (!self->top_is_dir);
 }
 
-/* 
+/*
  * Calculates curr_path from self->curr_comps.
  * Must be called whenever curr_comps is modified.
- */ 
+ */
 static status_t file_finder_calc_curr_path(file_finder_t * self)
 {
     gchar * * components;
@@ -1024,7 +1024,7 @@ static status_t file_finder_calc_current_item_obj(
     dir_components = NULL;
 
     ret = g_new0(item_result_t, 1);
-    
+
     if (!ret)
     {
         return FILEFIND_STATUS_OUT_OF_MEM;
@@ -1034,7 +1034,7 @@ static status_t file_finder_calc_current_item_obj(
     ret->basename = NULL;
     ret->dir_components = NULL;
     ret->base = NULL;
-    
+
     if (! (ret->path = g_strdup(self->curr_path)))
     {
         goto cleanup;
@@ -1054,7 +1054,7 @@ static status_t file_finder_calc_current_item_obj(
     end_comp_idx = self->curr_comps->len - 1 - (curr_not_a_dir ? 1 : 0);
 
     dir_components = g_ptr_array_new_with_free_func(destroy_string);
-       
+
     for (; comp_idx < end_comp_idx ; comp_idx++)
     {
         comp_copy =
@@ -1101,7 +1101,7 @@ cleanup:
     {
         g_ptr_array_free(dir_components, 1);
     }
-    
+
     ret = NULL;
     return FILEFIND_STATUS_OUT_OF_MEM;
 }
@@ -1117,7 +1117,7 @@ int file_find_next(file_find_handle_t * handle)
 
     self = (file_finder_t *)handle;
 
-    total_status = FILEFIND_STATUS_FALSE; 
+    total_status = FILEFIND_STATUS_FALSE;
     while (! (total_status == FILEFIND_STATUS_OK))
     {
         total_status = file_finder_process_current(self);
@@ -1128,7 +1128,7 @@ int file_find_next(file_find_handle_t * handle)
         else if (total_status == FILEFIND_STATUS_FALSE)
         {
             local_status = file_finder_master_move_to_next(self);
-            
+
             if (local_status == FILEFIND_STATUS_OUT_OF_MEM)
             {
                 goto cleanup;
@@ -1169,7 +1169,7 @@ static gboolean file_finder_increment_target_index(file_finder_t * self)
     return (++self->target_index < self->targets->len);
 }
 
-/* 
+/*
  * TODO : can this return NULL if it reached the end rather than ran out
  * of memory?
  * */
@@ -1212,8 +1212,8 @@ static status_t file_finder_me_die(file_finder_t * self)
 
 static status_t file_finder_become_default(file_finder_t * self)
 {
-    path_component_free( 
-        (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1) 
+    path_component_free(
+        (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
     );
     g_ptr_array_remove_index (self->dir_stack, self->dir_stack->len - 1);
 
@@ -1226,13 +1226,13 @@ static status_t file_finder_become_default(file_finder_t * self)
 
     if (self->dir_stack->len > 1)
     {
-        /* 
+        /*
          * If depth is false, then we no longer need the _curr_path
-         * of the directories above the previously-set value, because we 
+         * of the directories above the previously-set value, because we
          * already traversed them.
          *
          * TODO : should this be if (! self->depth)
-         */ 
+         */
         if (self->should_traverse_depth_first)
         {
             status_t status;
@@ -1266,7 +1266,7 @@ static status_t file_finder_mystat(file_finder_t * self)
     g_lstat(self->curr_path, &(self->top_stat));
 
     self->top_is_dir = g_file_test(self->curr_path, G_FILE_TEST_IS_DIR);
-    
+
     self->top_is_link = g_file_test(self->curr_path, G_FILE_TEST_IS_SYMLINK);
 
     return FILEFIND_STATUS_SKIP;
@@ -1280,7 +1280,7 @@ static status_t file_finder_check_process_current(file_finder_t * self)
     {
         return FILEFIND_STATUS_FALSE;
     }
-    
+
     return file_finder_filter_wrapper(self);
 }
 
@@ -1387,7 +1387,7 @@ static status_t file_finder_recurse(file_finder_t * self)
     self->current = deep_path;
     g_ptr_array_add(self->dir_stack, deep_path);
 
-    return FILEFIND_STATUS_FALSE;   
+    return FILEFIND_STATUS_FALSE;
 }
 
 static status_t file_finder_filter_wrapper(file_finder_t * self)
@@ -1413,14 +1413,14 @@ static status_t file_finder_check_subdir(file_finder_t * self)
 {
     status_t status;
 
-    /* 
+    /*
      * If current is not a directory always return 0, because we may
      * be asked to traverse single-files.
      */
 
     if (file_finder_curr_not_a_dir(self))
     {
-        return FILEFIND_STATUS_FALSE;    
+        return FILEFIND_STATUS_FALSE;
     }
 
     if (self->dir_stack->len <= 1)
@@ -1444,7 +1444,7 @@ static status_t file_finder_check_subdir(file_finder_t * self)
     {
         return status;
     }
-    
+
     return ((status == FILEFIND_STATUS_OK) ? FILEFIND_STATUS_FALSE : FILEFIND_STATUS_OK);
 }
 
@@ -1461,7 +1461,7 @@ static status_t file_finder_is_loop(file_finder_t * self)
         return
             g_tree_search(
                 self->current->inodes,
-                inode_tree_cmp, 
+                inode_tree_cmp,
                 ((gconstpointer)&key)
             )
             ? FILEFIND_STATUS_OK
@@ -1492,7 +1492,7 @@ int file_find_set_traverse_to(
     gchar * new_string;
 
     self = (file_finder_t *)handle;
- 
+
     status = file_finder_open_dir(self);
 
     if (status == FILEFIND_STATUS_OUT_OF_MEM)
@@ -1505,7 +1505,7 @@ int file_find_set_traverse_to(
         traverse_to = self->current->traverse_to;
 
         self->current->next_traverse_to_idx = 0;
-        
+
         for (i = num_children ; i < traverse_to->len ; i++)
         {
             g_free(g_ptr_array_index(traverse_to, i));
@@ -1524,7 +1524,7 @@ int file_find_set_traverse_to(
                 }
                 return FILE_FIND_OUT_OF_MEMORY;
             }
-            
+
             g_ptr_array_index(traverse_to, i) = new_string;
         }
 
@@ -1606,7 +1606,7 @@ int file_find_get_current_node_files_list(
 
     if (status == FILEFIND_STATUS_OK)
     {
-        
+
 
         return glib_strings_array_to_c(
             self->current->files,
@@ -1635,7 +1635,7 @@ int file_find_get_traverse_to(
 )
 {
     file_finder_t * self;
-    
+
     self = (file_finder_t *)handle;
 
     *ptr_to_num_files = 0;
@@ -1655,9 +1655,9 @@ extern int file_find_free(
 {
     file_finder_t * self;
     gint i;
-    
+
     self = (file_finder_t *)handle;
-  
+
     for (i = 0 ; i < self->dir_stack->len ; i++)
     {
         path_component_free(g_ptr_array_index(self->dir_stack, i));

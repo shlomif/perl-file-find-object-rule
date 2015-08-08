@@ -1,10 +1,10 @@
 /*
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -
@@ -41,7 +41,7 @@ enum FILE_FIND_IFACE_STATUS
     FILE_FIND_COULD_NOT_OPEN_DIR,
 };
 
-typedef struct 
+typedef struct
 {
     int stub;
 } file_find_handle_t;
@@ -49,7 +49,7 @@ typedef struct
 extern int file_find_new(file_find_handle_t * * output_handle, const char * first_target);
 
 extern void file_find_set_callback(
-    file_find_handle_t * handle, 
+    file_find_handle_t * handle,
     void (*callback)(const char * filename, void * context)
 );
 
