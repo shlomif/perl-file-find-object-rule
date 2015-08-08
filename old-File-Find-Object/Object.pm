@@ -31,7 +31,7 @@ sub new {
         _current => undef,
         files => [ @files ],
         ind => -1,
-        
+
         depth => $options->{depth},
         nocrossfs => $options->{nocrossfs},
         followlink => $options->{followlink},
@@ -92,11 +92,11 @@ sub set_current {
 # Return true if there is something next
 sub _process_current {
     my ($self) = @_;
-   
+
     $self->{currentfile} or return 0;
 
     $self->isdot and return 0;
-    $self->filter or return 0;  
+    $self->filter or return 0;
 
     foreach ($self->{_top}->{depth} ? qw/b a/ : qw/a b/) {
         if ($self->{_action}{$_}) {
@@ -109,7 +109,7 @@ sub _process_current {
             }
             return 1;
         }
-            
+
         if ($_ eq 'b') {
             $self->check_subdir or next;
             my $newtree = File::Find::Object::internal->new($self) or next;
@@ -159,13 +159,13 @@ File::Find::Object - An object oriented File::Find replacement
 
 =head1 DESCRIPTION
 
-File::Find::Object does same job as File::Find but works like an object and 
+File::Find::Object does same job as File::Find but works like an object and
 with an iterator. As File::Find is not object oriented, one cannot perform
-multiple searches in the same application. The second problem of File::Find 
-is its file processing: after starting its main loop, one cannot easilly wait 
+multiple searches in the same application. The second problem of File::Find
+is its file processing: after starting its main loop, one cannot easilly wait
 for another event an so get the next result.
 
-With File::Find::Object you can get the next file by calling the next() 
+With File::Find::Object you can get the next file by calling the next()
 function, but setting a callback is still possible.
 
 =head1 FUNCTIONS
@@ -193,19 +193,19 @@ Boolean - doesn't continue on filesystems different than the parent.
 
 Boolean - follow symlinks when they point to a directory.
 
-You can safely set this option to true as File::Find::Object does not follow 
+You can safely set this option to true as File::Find::Object does not follow
 the link if it detects a loop.
 
 =item filter
 
-Function reference - should point to a function returning TRUE or FALSE. This 
-function is called with the filename to filter, if the function return FALSE, 
+Function reference - should point to a function returning TRUE or FALSE. This
+function is called with the filename to filter, if the function return FALSE,
 the file is skipped.
 
 =item callback
 
-Function reference - should point to a function, which would be called each 
-time a new file is returned. The function is called with the current filename 
+Function reference - should point to a function, which would be called each
+time a new file is returned. The function is called with the current filename
 as an argument.
 
 =back
