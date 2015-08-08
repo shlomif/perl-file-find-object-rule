@@ -18,7 +18,7 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Should not be instantiated directly. 
+Should not be instantiated directly.
 
 =head1 AUTHOR
 
