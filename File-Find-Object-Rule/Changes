@@ -1,6 +1,13 @@
 Changes Log for File-Find-Object-Rule:
 --------------------------------------
 
+0.0306      Sun 11 Sep 15:58:23 IDT 2016
+    - Made the trailing space tests AUTHOR_TESTING only.
+        - We received a report that there was a circular dependency on
+        Test::TrailingSpace and while this is not an issue and was caused by
+        the reporter's use-case (that was irrational in my opinion), this change
+        was done to avoid future reports like that.
+
 0.0305      Sun 18 May 14:10:09 IDT 2014
     - Made the tests succeed if run in parallel (e.g:
     HARNESS_OPTIONS="j4:c" ).
