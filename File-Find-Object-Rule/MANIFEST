@@ -17,9 +17,9 @@ t/lib/File/Find/Object/TreeCreate.pm
 t/pod-coverage.t
 t/pod.t
 t/readme-pod.t
+t/release-trailing-space.t
 t/sample-data/to-copy-from/File-Find-Rule.t
 t/sample-data/to-copy-from/findorule.t
 t/sample-data/to-copy-from/foobar
 t/sample-data/to-copy-from/lib/File/Find/Object/Rule/Test/ATeam.pm
-t/style-trailing-space.t
 META.json
