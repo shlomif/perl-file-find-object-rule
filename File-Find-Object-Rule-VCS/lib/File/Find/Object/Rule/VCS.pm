@@ -65,11 +65,8 @@ use Carp                  ();
 use Text::Glob       0.08 ();
 use File::Find::Object::Rule ();
 
-use vars qw{$VERSION @ISA @EXPORT};
-
-$VERSION = '0.0.3';
-
-use base 'File::Find::Object::Rule';
+use vars qw{@ISA @EXPORT};
+use parent 'File::Find::Object::Rule';
 
 my $FFOR = 'File::Find::Object::Rule';
 
@@ -116,35 +113,35 @@ Passing C<undef>, or an unsupported name, will throw an exception.
 =cut
 
 sub File::Find::Object::Rule::ignore_vcs {
-	my $find = $_[0]->_force_object;
+    my $find = $_[0]->_force_object;
 
-	# Handle special cases
-	unless ( @_ ) {
-		# Logically combine all the ignores. This will be much
-		# faster than just calling them all one after the other.
-		return $find->or(
-			$FFOR->name(@svn, '.bzr', '.git', 'CVS')->directory->prune->discard,
-			$FFOR->name(qr/^\.\#/)->file->discard,
-			$FFOR->new,
-			);
-	}
-	unless ( defined $_[1] ) {
-		Carp::croak("->ignore_vcs: No version control system name provided");
-	}
+    # Handle special cases
+    unless ( @_ ) {
+        # Logically combine all the ignores. This will be much
+        # faster than just calling them all one after the other.
+        return $find->or(
+            $FFOR->name(@svn, '.bzr', '.git', 'CVS')->directory->prune->discard,
+            $FFOR->name(qr/^\.\#/)->file->discard,
+            $FFOR->new,
+            );
+    }
+    unless ( defined $_[1] ) {
+        Carp::croak("->ignore_vcs: No version control system name provided");
+    }
 
         # As a convenience for higher-level APIs
         # we treat a defined null string as a nullop
-	my $vcs = lc $_[1];
+    my $vcs = lc $_[1];
         return $find if $vcs eq '';
 
-	# Hand off to the rules for each VCS
-	return $find->ignore_cvs if $vcs eq 'cvs';
-	return $find->ignore_svn if $vcs eq 'svn';
-	return $find->ignore_svn if $vcs eq 'subversion';
-	return $find->ignore_bzr if $vcs eq 'bzr';
-	return $find->ignore_bzr if $vcs eq 'bazaar';
-	return $find->ignore_git if $vcs eq 'git';
-	Carp::croak("->ignore_vcs: '$vcs' is not supported");
+    # Hand off to the rules for each VCS
+    return $find->ignore_cvs if $vcs eq 'cvs';
+    return $find->ignore_svn if $vcs eq 'svn';
+    return $find->ignore_svn if $vcs eq 'subversion';
+    return $find->ignore_bzr if $vcs eq 'bzr';
+    return $find->ignore_bzr if $vcs eq 'bazaar';
+    return $find->ignore_git if $vcs eq 'git';
+    Carp::croak("->ignore_vcs: '$vcs' is not supported");
 }
 
 =pod
@@ -160,12 +157,12 @@ automated merge that start with C<'.#'> (dot-hash).
 =cut
 
 sub File::Find::Object::Rule::ignore_cvs {
-	my $find = $_[0]->_force_object;
-	return $find->or(
-		$FFOR->name('CVS')->directory->prune->discard,
-		$FFOR->name(qr/^\.\#/)->file->discard,
-		$FFOR->new,
-		);
+    my $find = $_[0]->_force_object;
+    return $find->or(
+        $FFOR->name('CVS')->directory->prune->discard,
+        $FFOR->name(qr/^\.\#/)->file->discard,
+        $FFOR->new,
+        );
 }
 
 =pod
@@ -178,11 +175,11 @@ from your L<File::Find::Object::Rule> search.
 =cut
 
 sub File::Find::Object::Rule::ignore_svn {
-	my $find = $_[0]->_force_object;
-	return $find->or(
-		$FFOR->name(@svn)->directory->prune->discard,
-		$FFOR->new,
-		);
+    my $find = $_[0]->_force_object;
+    return $find->or(
+        $FFOR->name(@svn)->directory->prune->discard,
+        $FFOR->new,
+        );
 }
 
 =pod
@@ -195,11 +192,11 @@ from your L<File::Find::Object::Rule> search.
 =cut
 
 sub File::Find::Object::Rule::ignore_bzr {
-	my $find = $_[0]->_force_object;
-	return $find->or(
-		$FFOR->name('.bzr')->directory->prune->discard,
-		$FFOR->new,
-		);
+    my $find = $_[0]->_force_object;
+    return $find->or(
+        $FFOR->name('.bzr')->directory->prune->discard,
+        $FFOR->new,
+        );
 }
 
 =pod
@@ -212,11 +209,11 @@ from your L<File::Find::Object::Rule> search.
 =cut
 
 sub File::Find::Object::Rule::ignore_git {
-	my $find = $_[0]->_force_object;
-	return $find->or(
-		$FFOR->name('.git')->directory->prune->discard,
-		$FFOR->new,
-		);
+    my $find = $_[0]->_force_object;
+    return $find->or(
+        $FFOR->name('.git')->directory->prune->discard,
+        $FFOR->new,
+        );
 }
 
 1;

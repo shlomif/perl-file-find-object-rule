@@ -1,5 +1,8 @@
 Revision history for File::Find::Object::Rule::VCS
 
+0.0.4   2018-05-20
+    - Convert to dzil .
+
 0.0.3   2014-01-30
     - Add README , LICENSE , t/cpan-changes.t , t/style-trailing-space.t
     (in part CPANTS Kwalitee)
