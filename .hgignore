@@ -14,13 +14,7 @@ File-Find-Object-Rule/MYMETA.json
 File-Find-Object-Rule/MYMETA.yml
 File-Find-Object-Rule/_build
 File-Find-Object-Rule/blib
-Stream-Extract/module/Build
-Stream-Extract/module/META.json
-Stream-Extract/module/META.yml
-Stream-Extract/module/MYMETA.json
-Stream-Extract/module/MYMETA.yml
-Stream-Extract/module/_build
-Stream-Extract/module/blib
+Stream-Extract/module/.build
 
 syntax: regexp
 
