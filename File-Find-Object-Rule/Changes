@@ -1,6 +1,9 @@
 Changes Log for File-Find-Object-Rule:
 --------------------------------------
 
+0.0307  2018-05-23
+    - Convert to Dist-Zilla .
+
 0.0306  2016-09-11
     - Made the trailing space tests AUTHOR_TESTING only.
         - We received a report that there was a circular dependency on

@@ -7,7 +7,7 @@ use warnings;
 
 use 5.008;
 
-use vars qw/$VERSION $AUTOLOAD/;
+use vars qw/$AUTOLOAD/;
 use File::Spec;
 use Text::Glob 'glob_to_regex';
 use Number::Compare;
@@ -15,8 +15,6 @@ use Carp qw/croak/;
 use File::Find::Object; # we're only wrapping for now
 use File::Basename;
 use Cwd;           # 5.00503s File::Find goes screwy with max_depth == 0
-
-$VERSION = '0.0306';
 
 use Class::XSAccessor
     accessors => {
