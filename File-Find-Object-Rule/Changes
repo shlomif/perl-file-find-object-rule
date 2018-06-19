@@ -1,7 +1,7 @@
 Changes Log for File-Find-Object-Rule:
 --------------------------------------
 
-0.0308  2018-06-20
+0.0309  2018-06-20
     - Remove stray *.orig files from the CPAN dist.
         - Thanks to gregor .
 
