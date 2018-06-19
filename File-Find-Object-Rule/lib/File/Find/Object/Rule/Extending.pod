@@ -23,7 +23,7 @@ File::Find::Object::Rule::Extending - the mini-guide to extending File::Find::Ob
 =head1 DESCRIPTION
 
 L<File::Find::Object::Rule> inherits L<File::Find::Rule>'s extensibility. It
-is now possibile to extend it, using the following conventions.
+is now possible to extend it, using the following conventions.
 
 =head2 Declare your package
 
