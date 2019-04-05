@@ -7,7 +7,8 @@ File-Find-Object-Rule-MMagic/MYMETA.yml
 File-Find-Object-Rule-MMagic/_build
 File-Find-Object-Rule-MMagic/blib
 File-Find-Object-Rule-VCS/.build
-File-Find-Object-Rule/.build
+File-Find-Object-Rule/.build/
+File-Find-Object-Rule/.tidyall.d/
 Stream-Extract/module/.build
 
 syntax: regexp
