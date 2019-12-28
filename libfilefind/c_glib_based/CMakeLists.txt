@@ -1,7 +1,8 @@
 INCLUDE(FindPkgConfig)
+
 MACRO(CHOMP VAR)
     STRING(REGEX REPLACE "[\r\n]+$" "" ${VAR} "${${VAR}}")
-ENDMACRO(CHOMP)
+ENDMACRO()
 
 SET(MYNAME "filefind")
 SET(DEBUG "" CACHE BOOL "Add debugging information")
@@ -51,7 +52,7 @@ SET(CPACK_SOURCE_IGNORE_FILES
     "/test_rwlock_2$"
 )
 
-IF(WIN32 AND NOT UNIX)
+IF (WIN32 AND NOT UNIX)
     # There is a bug in NSI that does not handle full unix paths properly. Make
     # sure there is at least one set of four (4) backlasshes.
     SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\\\dondorf-king.bmp")
@@ -66,8 +67,7 @@ IF(WIN32 AND NOT UNIX)
     SET(CPACK_NSIS_MUI_UNIICON ${CPACK_NSIS_MUI_ICON})
     SET(CPACK_PACKAGE_ICON ${CPACK_NSIS_MUI_ICON})
     SET(CPACK_NSIS_MODIFY_PATH "ON")
-ELSE(WIN32 AND NOT UNIX)
-ENDIF(WIN32 AND NOT UNIX)
+ENDIF ()
 
 ### This is to set the RPATH correctly, so when installed under a prefix
 ### the executables will find the libraries.
@@ -103,31 +103,30 @@ SET (CFLAG_TO_CHECK "-Wall")
 CHECK_C_COMPILER_FLAG(${CFLAG_TO_CHECK} CFLAG_GCC_ALL_WARNS)
 IF (${CFLAG_GCC_ALL_WARNS})
     ADD_DEFINITIONS(${CFLAG_TO_CHECK})
-ENDIF (${CFLAG_GCC_ALL_WARNS})
+ENDIF ()
 
 IF (${DEBUG})
     ADD_DEFINITIONS("-DFILEFIND_DEBUG=1")
-ENDIF (${DEBUG})
-
+ENDIF ()
 
 # Inspired from /usr/share/autoconf/autoconf/c.m4
 FOREACH(KEYWORD "inline" "__inline__" "__inline")
-   IF(NOT DEFINED HAVE_C_INLINE)
-     TRY_COMPILE(C_HAS_${KEYWORD} "${CMAKE_CURRENT_BINARY_DIR}"
-       "${CMAKE_CURRENT_SOURCE_DIR}/test_inline.c"
-       COMPILE_DEFINITIONS "-Dinline=${KEYWORD}")
-     IF(C_HAS_${KEYWORD})
-       SET(HAVE_C_INLINE TRUE)
-       SET(FCS_INLINE_KEYWORD "${KEYWORD}")
-     ENDIF(C_HAS_${KEYWORD})
-   ENDIF(NOT DEFINED HAVE_C_INLINE)
-ENDFOREACH(KEYWORD)
+    IF(NOT DEFINED HAVE_C_INLINE)
+        TRY_COMPILE(C_HAS_${KEYWORD} "${CMAKE_CURRENT_BINARY_DIR}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/test_inline.c"
+            COMPILE_DEFINITIONS "-Dinline=${KEYWORD}")
+        IF(C_HAS_${KEYWORD})
+            SET(HAVE_C_INLINE TRUE)
+            SET(FCS_INLINE_KEYWORD "${KEYWORD}")
+        ENDIF ()
+    ENDIF ()
+ENDFOREACH ()
 
 
 CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.h
-    )
+)
 
 # So it can find config.h
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
@@ -142,7 +141,7 @@ SET (LIBNAME "${MYNAME}")
 ADD_LIBRARY ("${LIBNAME}"
     SHARED
     ${FILEFIND_MODULES}
-    )
+)
 
 LIST (APPEND PTHREAD_RWLOCK_FCFS_LIBS "${LIBNAME}")
 IF (${BUILD_STATIC_LIBRARY})
@@ -161,11 +160,11 @@ IF (${BUILD_STATIC_LIBRARY})
         ${PTHREAD_RWLOCK_FCFS_LIBS}
         PROPERTIES CLEAN_DIRECT_OUTPUT 1
     )
-ENDIF (${BUILD_STATIC_LIBRARY})
+ENDIF ()
 
 SET_TARGET_PROPERTIES("${LIBNAME}"
     PROPERTIES VERSION 0.1.0 SOVERSION 0
-    )
+)
 
 PKG_CHECK_MODULES (GLIB2 REQUIRED glib-2.0)
 
@@ -200,5 +199,3 @@ ADD_DEPENDENCIES(
     "test"
     "all"
 )
-
-
