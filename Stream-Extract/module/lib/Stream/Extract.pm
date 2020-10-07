@@ -9,9 +9,9 @@ use Carp;
 
 use Class::XSAccessor
     constructor => '_dont_use_me',
-    accessors => {
-        _iter_coderef => '_iter_coderef',
-        _filter_coderef => '_filter_coderef',
+    accessors   => {
+    _iter_coderef   => '_iter_coderef',
+    _filter_coderef => '_filter_coderef',
     },
     ;
 
@@ -19,15 +19,6 @@ use Class::XSAccessor
 
 Stream::Extract - find records out of a stream that match certain qualities.
 (similar to grep(1).)
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
 
 =head1 SYNOPSIS
 
@@ -82,12 +73,12 @@ sub new
 
 sub _init
 {
-    my ($self, $args) = @_;
+    my ( $self, $args ) = @_;
 
-    $self->_iter_coderef($args->{input}->{code})
+    $self->_iter_coderef( $args->{input}->{code} )
         or Carp::confess "No input code ref specified.";
 
-    $self->_filter_coderef($args->{filter})
+    $self->_filter_coderef( $args->{filter} )
         or Carp::confess "No filter code ref specified.";
 
     return;
@@ -112,35 +103,6 @@ Shlomi Fish, L<http://www.shlomifish.org/>, C<< <shlomif at cpan.org> >> .
 Please report any bugs or feature requests to C<bug-stream-extract at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Stream-Extract>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Stream::Extract
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Stream-Extract>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Stream-Extract>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Stream-Extract>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Stream-Extract/>
-
-=back
-
 
 =head1 ACKNOWLEDGEMENTS
 
@@ -176,4 +138,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Stream::Extract
+1;    # End of Stream::Extract

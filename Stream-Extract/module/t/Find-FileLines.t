@@ -8,19 +8,15 @@ use Test::More tests => 1;
 use Stream::Extract;
 
 {
-    my @lines =
-    (
-        "Ini\n",
-        "Mini\n",
-        "Foobar\n",
-        "Moo\n",
-    );
+    my @lines = ( "Ini\n", "Mini\n", "Foobar\n", "Moo\n", );
 
     my $finder = Stream::Extract->new(
         {
-            input => { code => sub { return shift(@lines); } },
+            input => {
+                code => sub { return shift(@lines); }
+            },
             filter => sub {
-                my ($self, $args) = @_;
+                my ( $self, $args ) = @_;
 
                 my $record_obj = $args->{record};
 
@@ -30,5 +26,5 @@ use Stream::Extract;
     );
 
     # TEST
-    ok ($finder, "Finder was initialized.");
+    ok( $finder, "Finder was initialized." );
 }
