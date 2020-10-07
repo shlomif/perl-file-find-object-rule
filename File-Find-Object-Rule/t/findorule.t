@@ -28,7 +28,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                     "./t/sample-data/to-copy-from/findorule.t"),
             },
             {
-                'name' => "foobar",
+                'name'     => "foobar",
                 'contents' =>
                     $tree_creator->cat("./t/sample-data/to-copy-from/foobar"),
 

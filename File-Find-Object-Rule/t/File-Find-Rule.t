@@ -29,7 +29,7 @@ my $tree_creator = File::Find::Object::TreeCreate->new();
                     "./t/sample-data/to-copy-from/findorule.txt"),
             },
             {
-                'name' => "foobar",
+                'name'     => "foobar",
                 'contents' =>
                     $tree_creator->cat("./t/sample-data/to-copy-from/foobar"),
 
@@ -262,7 +262,7 @@ is_deeply(
 $f = find(
     or => [
         find(
-            directory => name => qr/(\.svn|CVS)/,
+            directory => name    => qr/(\.svn|CVS)/,
             prune     => discard =>
         ),
         find( file => )
@@ -345,7 +345,7 @@ is_deeply( [ find( maxdepth => 0, in => $copy_fn ) ],
 my $rule = find(
     or => [
         find(
-            name => qr/(\.svn|CVS)/,
+            name    => qr/(\.svn|CVS)/,
             discard =>
         ),
         find(),
@@ -406,7 +406,7 @@ is_deeply(
         sort +find(
             or => [
                 find(
-                    name => qr/(\.svn|CVS)/,
+                    name    => qr/(\.svn|CVS)/,
                     discard =>
                 ),
                 find(),

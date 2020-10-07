@@ -260,15 +260,15 @@ C<accessed>, C<changed>), they have been included for completeness.
 
 use vars qw( %X_tests );
 %X_tests = (
-    -r => readable => -R => r_readable => -w => writeable => -W =>
-        r_writeable => -w => writable => -W => r_writable => -x =>
-        executable => -X => r_executable => -o => owned => -O => r_owned =>
+    -r              => readable => -R => r_readable => -w => writeable  => -W =>
+        r_writeable => -w       => writable => -W   => r_writable => -x =>
+        executable  => -X => r_executable   => -o   => owned => -O => r_owned =>
 
-        -e => exists => -f => file => -z => empty => -d => directory => -s =>
-        nonempty => -l => symlink => => -p => fifo  => -u => setuid => -S =>
-        socket   => -g => setgid  => -b    => block => -k => sticky => -c =>
-        character => => -t => tty => -M => modified => -A => accessed => -T =>
-        ascii => -C => changed => -B => binary =>
+        -e => exists    => -f => file => -z => empty => -d => directory => -s =>
+        nonempty  => -l => symlink => => -p => fifo   => -u => setuid   => -S =>
+        socket    => -g => setgid  => -b    => block  => -k => sticky   => -c =>
+        character => => -t => tty  => -M => modified  => -A => accessed => -T =>
+        ascii     => -C    => changed => -B => binary =>
 );
 
 for my $test ( keys %X_tests )
