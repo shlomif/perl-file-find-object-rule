@@ -1,5 +1,9 @@
 Revision history for File::Find::Object::Rule::VCS
 
+0.0.5   2020-10-22
+    - Avoid stale POD
+        - Inspired by Lady_Aleena.
+
 0.0.4   2018-05-20
     - Convert to dzil .
 

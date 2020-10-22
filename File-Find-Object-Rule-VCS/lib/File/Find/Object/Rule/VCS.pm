@@ -226,14 +226,6 @@ sub File::Find::Object::Rule::ignore_git {
 
 - Add other useful VCS-related methods
 
-=head1 SUPPORT
-
-Bugs should always be submitted via the CPAN bug tracker
-
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=File-Find-Rule-VCS>
-
-For other issues, contact the maintainer
-
 =head1 AUTHOR
 
 =head2 ORIGINAL AUTHOR
