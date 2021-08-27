@@ -1,7 +1,9 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 PROJECT( "libfilefind" )
 
 INCLUDE ("${CMAKE_SOURCE_DIR}/cmake/shlomif_common_bootstrap.cmake")
 SHLOMIF_COMMON_SETUP("${private_mod_path}")
+INCLUDE(GNUInstallDirs)
 
 INCLUDE(FindPkgConfig)
 
@@ -90,8 +92,6 @@ INCLUDE(CPack)
 
 include(CheckFunctionExists)
 INCLUDE(CheckCCompilerFlag)
-
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET (CFLAG_TO_CHECK "-Wall")
 CHECK_C_COMPILER_FLAG(${CFLAG_TO_CHECK} CFLAG_GCC_ALL_WARNS)
