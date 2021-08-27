@@ -5,25 +5,16 @@ use warnings;
 
 use Test::More tests => 1;
 
-BEGIN
-{
-    use File::Spec;
-    use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
-}
+use File::TreeCreate ();
 
-use File::Find::Object::TreeCreate;
-use File::Find::Object;
-
-use File::Path;
+use File::Path qw( rmtree );
 
 {
-    my $tree =
-    {
+    my $tree = {
         'name' => "traverse-1/",
-        'subs' =>
-        [
+        'subs' => [
             {
-                'name' => "b.doc",
+                'name'     => "b.doc",
                 'contents' => "This file was spotted in the wild.",
             },
             {
@@ -31,8 +22,7 @@ use File::Path;
             },
             {
                 'name' => "foo/",
-                'subs' =>
-                [
+                'subs' => [
                     {
                         'name' => "yet/",
                     },
@@ -41,10 +31,11 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
-    $t->create_tree("./t/sample-data/", $tree);
+    my $t = File::TreeCreate->new();
+    $t->create_tree( "./t/sample-data/", $tree );
 
-    open my $lff_fh, "./minifind " . $t->get_path("./t/sample-data/traverse-1") . "|"
+    open my $lff_fh,
+        "./minifind " . $t->get_path("./t/sample-data/traverse-1") . "|"
         or die "Cannot execute minifind";
 
     my @results = <$lff_fh>;
@@ -55,16 +46,20 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
-            ("", qw(
-                a
-                b.doc
-                foo
-                foo/yet
-            ))),
+        [
+            (
+                map { $t->get_path("t/sample-data/traverse-1/$_") } (
+                    "", qw(
+                        a
+                        b.doc
+                        foo
+                        foo/yet
+                    )
+                )
+            ),
         ],
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"));
+    rmtree( $t->get_path("./t/sample-data/traverse-1") );
 }
