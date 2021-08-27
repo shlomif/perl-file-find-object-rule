@@ -397,7 +397,7 @@ static gboolean dup_inode_tree(
     GTree * new_tree = (GTree *)data;
 
     /* TODO : add error control in case the allocations failed. */
-    g_tree_insert(new_tree, g_memdup(key, sizeof(inode_data_t)), g_memdup(value, sizeof(gint)));
+    g_tree_insert(new_tree, g_memdup2(key, sizeof(inode_data_t)), g_memdup2(value, sizeof(gint)));
 
     return FALSE;
 }
@@ -593,8 +593,8 @@ static status_t path_component_insert_inode_into_tree(
 
         g_tree_insert(
             find,
-            g_memdup(&data, sizeof(data)),
-            g_memdup(&depth, sizeof(depth))
+            g_memdup2(&data, sizeof(data)),
+            g_memdup2(&depth, sizeof(depth))
         );
     }
 
