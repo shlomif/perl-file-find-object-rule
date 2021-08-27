@@ -34,6 +34,7 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 #include <glib/gstdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "inline.h"
 
@@ -397,7 +398,7 @@ static gboolean dup_inode_tree(
     GTree * new_tree = (GTree *)data;
 
     /* TODO : add error control in case the allocations failed. */
-    g_tree_insert(new_tree, g_memdup2(key, sizeof(inode_data_type)), g_memdup2(value, sizeof(gint)));
+    g_tree_insert(new_tree, g_memdup2(key, sizeof(inode_data_type)), value);
 
     return FALSE;
 }
@@ -445,10 +446,14 @@ static void inode_tree_destroy_key(gpointer data)
     g_free(data);
 }
 
+#if 0
 static void inode_tree_destroy_val(gpointer data)
 {
+#if 0
     g_free(data);
+#endif
 }
+#endif
 
 
 static void file_finder_fill_actions(
@@ -580,7 +585,7 @@ static status_t path_component_move_to_next_target(
 
 static status_t path_component_insert_inode_into_tree(
     path_component_t * self,
-    GTree * find, gint depth)
+    GTree * find, const intptr_t depth)
 {
     ino_t inode;
 
@@ -594,7 +599,7 @@ static status_t path_component_insert_inode_into_tree(
         g_tree_insert(
             find,
             g_memdup2(&data, sizeof(data)),
-            g_memdup2(&depth, sizeof(depth))
+            ((gpointer)depth)
         );
     }
 
@@ -625,7 +630,7 @@ static path_component_t * deep_path_new(
         inode_tree_cmp_with_context,
         NULL,
         inode_tree_destroy_key,
-        inode_tree_destroy_val
+        NULL
     );
 
     g_tree_foreach(from->inodes, dup_inode_tree, (gpointer)find);
@@ -692,7 +697,7 @@ static status_t top_path_move_next(
                 inode_tree_cmp_with_context,
                 NULL,
                 inode_tree_destroy_key,
-                inode_tree_destroy_val
+                NULL
             );
 
             if (! find)
