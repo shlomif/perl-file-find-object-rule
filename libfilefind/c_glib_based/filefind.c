@@ -386,7 +386,7 @@ typedef struct
 {
     dev_t st_dev;
     ino_t st_ino;
-} inode_data_t;
+} inode_data_type;
 
 static gboolean dup_inode_tree(
         gpointer key,
@@ -397,7 +397,7 @@ static gboolean dup_inode_tree(
     GTree * new_tree = (GTree *)data;
 
     /* TODO : add error control in case the allocations failed. */
-    g_tree_insert(new_tree, g_memdup2(key, sizeof(inode_data_t)), g_memdup2(value, sizeof(gint)));
+    g_tree_insert(new_tree, g_memdup2(key, sizeof(inode_data_type)), g_memdup2(value, sizeof(gint)));
 
     return FALSE;
 }
@@ -405,10 +405,10 @@ static gboolean dup_inode_tree(
 
 static gint inode_tree_cmp(gconstpointer a_void, gconstpointer b_void)
 {
-    inode_data_t * a, * b;
+    inode_data_type * a, * b;
 
-    a = (inode_data_t *)a_void;
-    b = (inode_data_t *)b_void;
+    a = (inode_data_type *)a_void;
+    b = (inode_data_type *)b_void;
 
     if (a->st_dev < b->st_dev)
     {
@@ -586,7 +586,7 @@ static status_t path_component_insert_inode_into_tree(
 
     if ((inode = path_component_get_inode(self)))
     {
-        inode_data_t data;
+        inode_data_type data;
 
         data.st_ino = inode;
         data.st_dev = path_component_get_dev(self);
@@ -1451,7 +1451,7 @@ static status_t file_finder_check_subdir(file_finder_t * self)
 static status_t file_finder_is_loop(file_finder_t * self)
 {
     ino_t inode;
-    inode_data_t key;
+    inode_data_type key;
 
     if ((inode = self->top_stat.st_ino))
     {
