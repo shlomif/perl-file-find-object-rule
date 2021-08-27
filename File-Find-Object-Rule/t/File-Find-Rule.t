@@ -6,13 +6,12 @@ use warnings;
 
 use Test::More tests => 42;
 
+use File::TreeCreate ();
+use File::Path qw( rmtree );
+
 use lib './t/lib';
 
-use File::Find::Object::TreeCreate;
-
-use File::Path;
-
-my $tree_creator = File::Find::Object::TreeCreate->new();
+my $tree_creator = File::TreeCreate->new();
 
 {
     my $tree = {
@@ -102,7 +101,7 @@ my @ateam_path =
     lib/File/Find/Object/Rule
     lib/File/Find/Object/Rule/Test
     lib/File/Find/Object/Rule/Test/ATeam.pm
-);
+    );
 
 my $ATeam_pm_fn = $ateam_path[-1];
 
