@@ -155,13 +155,12 @@ static GPtrArray * string_array_copy(GPtrArray *const arr)
         return NULL;
     }
 
-    for (gint i = 0 ; i < arr->len ; i++)
+    for (gint i = 0 ; i < arr->len ; ++i)
     {
         string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
         if (! string_copy)
         {
-            gint prev_i;
-            for (prev_i = 0 ; prev_i < i ; prev_i++)
+            for (gint prev_i = 0 ; prev_i < i ; ++prev_i)
             {
                 g_free(g_ptr_array_index(arr, prev_i));
             }
@@ -178,9 +177,7 @@ static GPtrArray * string_array_copy(GPtrArray *const arr)
 
 static void string_array_free(GPtrArray * arr)
 {
-    gint i;
-
-    for( i = 0 ; i < arr->len ; i++)
+    for (gint i = 0 ; i < arr->len ; ++i)
     {
         g_free(g_ptr_array_index(arr, i));
     }
@@ -286,8 +283,7 @@ static status_t path_component_calc_dir_files(
             fn_copy = g_strdup(filename);
             if (!fn_copy)
             {
-                int prev_i;
-                for( prev_i = 0 ; prev_i < files->len ; prev_i++)
+                for (int prev_i = 0 ; prev_i < files->len ; ++prev_i)
                 {
                     g_free(g_ptr_array_index(files, prev_i));
                 }
@@ -953,7 +949,6 @@ static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
 static status_t file_finder_calc_curr_path(file_finder_t * self)
 {
     gchar * * components;
-    int i;
 
     if (self->curr_path)
     {
@@ -967,6 +962,7 @@ static status_t file_finder_calc_curr_path(file_finder_t * self)
         return FILEFIND_STATUS_OUT_OF_MEM;
     }
 
+    int i;
     for ( i = 0 ; i < self->curr_comps->len ; i++)
     {
         components[i] = g_ptr_array_index (self->curr_comps, i);
@@ -1491,7 +1487,7 @@ int file_find_set_traverse_to(
 {
     file_finder_t * self;
     status_t status;
-    int i, up_to_i;
+    int up_to_i;
     GPtrArray * traverse_to;
     gchar * new_string;
 
@@ -1510,14 +1506,14 @@ int file_find_set_traverse_to(
 
         self->current->next_traverse_to_idx = 0;
 
-        for (i = num_children ; i < traverse_to->len ; i++)
+        for (gint i = num_children ; i < traverse_to->len ; ++i)
         {
             g_free(g_ptr_array_index(traverse_to, i));
         }
 
         g_ptr_array_set_size(traverse_to, num_children);
 
-        for (i=0 ; i < num_children ; i++)
+        for (gint i=0 ; i < num_children ; ++i)
         {
             if (!(new_string = g_strdup((gchar *)children[i])))
             {
@@ -1548,7 +1544,7 @@ static int glib_strings_array_to_c(
 )
 {
     int num_strings;
-    int i, up_to_i;
+    int up_to_i;
     char * * strings = NULL, * * next_string;
 
     num_strings = array->len - start_idx;
@@ -1561,7 +1557,7 @@ static int glib_strings_array_to_c(
 
     next_string = strings;
 
-    for ( i = 0 ; i < num_strings ; i++, next_string++ )
+    for (gint i = 0 ; i < num_strings ; i++, next_string++ )
     {
         if (! ((*next_string)
                     = strdup((char *)g_ptr_array_index(array, i+start_idx)))
@@ -1657,12 +1653,9 @@ extern int file_find_free(
     file_find_handle_t * handle
 )
 {
-    file_finder_t * self;
-    gint i;
+    file_finder_t * const self = (file_finder_t *)handle;
 
-    self = (file_finder_t *)handle;
-
-    for (i = 0 ; i < self->dir_stack->len ; i++)
+    for (gint i = 0 ; i < self->dir_stack->len ; i++)
     {
         path_component_free(g_ptr_array_index(self->dir_stack, i));
     }
@@ -1693,4 +1686,3 @@ extern int file_find_free(
 
     return FILE_FIND_OK;
 }
-
