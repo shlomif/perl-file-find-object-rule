@@ -7,7 +7,7 @@ use Test::More tests => 1;
 
 use File::TreeCreate ();
 
-use File::Path qw( rmtree );
+use File::Path qw( mkpath rmtree );
 
 {
     my $tree = {
@@ -32,6 +32,7 @@ use File::Path qw( rmtree );
     };
 
     my $t = File::TreeCreate->new();
+    mkpath("./t/sample-data");
     $t->create_tree( "./t/sample-data/", $tree );
 
     open my $lff_fh,

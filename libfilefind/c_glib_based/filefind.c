@@ -299,7 +299,7 @@ static status_t path_component_calc_dir_files(
 
         g_dir_close(handle);
 
-#if 0
+#if 1
         g_ptr_array_sort(files, indirect_lexic_compare);
 #endif
 

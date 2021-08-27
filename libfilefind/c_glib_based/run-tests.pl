@@ -13,52 +13,57 @@ use File::Path;
 use Getopt::Long;
 use Env::Path;
 
+use Path::Tiny qw/ path /;
+
+my $bindir     = path(__FILE__)->parent;
+my $abs_bindir = $bindir->absolute;
+
 sub run_tests
 {
     my $tests = shift;
 
-    exec("runprove", @$tests);
+    exec( "runprove", @$tests );
 }
 
 my $tests_glob = "*.{exe,py,t}";
 
-GetOptions(
-    '--glob=s' => \$tests_glob,
-) or die "--glob='tests_glob'";
+GetOptions( '--glob=s' => \$tests_glob, )
+    or die "--glob='tests_glob'";
+
+sub myglob
+{
+    return glob( shift . "/$tests_glob" );
+}
 
 {
     local $ENV{FCS_PATH} = Cwd::getcwd();
 
-    local $ENV{HARNESS_ALT_INTRP_FILE} =
-        File::Spec->rel2abs(
+    if (0)
+    {
+        local $ENV{HARNESS_ALT_INTRP_FILE} = File::Spec->rel2abs(
             File::Spec->catdir(
-                File::Spec->curdir(),
-                "t", "config", "alternate-interpreters.yml",
+                File::Spec->curdir(), "t",
+                "config",             "alternate-interpreters.yml",
             ),
-        )
-        ;
+        );
+    }
 
     local $ENV{HARNESS_PLUGINS} =
-        "ColorSummary ColorFileVerdicts AlternateInterpreters"
-        ;
+        "ColorSummary ColorFileVerdicts AlternateInterpreters";
 
-    if (system("make", "-s"))
+    if ( system( "make", "-s" ) )
     {
         die "make failed";
     }
 
     # Put the valgrind test last because it takes a long time.
     my @tests =
-        sort
-        {
-            (($a =~ /valgrind/) <=> ($b =~ /valgrind/))
-                ||
-            ($a cmp $b)
-        }
-        glob("t/$tests_glob")
-        ;
+        sort {
+               ( ( $a =~ /valgrind/ ) <=> ( $b =~ /valgrind/ ) )
+            || ( $a cmp $b )
+        } ( myglob("$abs_bindir/t") );
 
-    if (! $ENV{FCS_TEST_BUILD})
+    if ( !$ENV{FCS_TEST_BUILD} )
     {
         @tests = grep { !/build-process/ } @tests;
     }
@@ -66,10 +71,9 @@ GetOptions(
     {
         # local $ENV{FCS_PATH} = dirname(which("fc-solve"));
         print STDERR "FCS_PATH = $ENV{FCS_PATH}\n";
-        run_tests(\@tests);
+        run_tests( \@tests );
     }
 }
-
 
 =head1 COPYRIGHT AND LICENSE
 
