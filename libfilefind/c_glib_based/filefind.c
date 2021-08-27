@@ -144,10 +144,9 @@ static GCC_INLINE void free_item_obj(file_finder_t * self)
     return;
 }
 
-static GPtrArray * string_array_copy(GPtrArray * arr)
+static GPtrArray * string_array_copy(GPtrArray *const arr)
 {
     GPtrArray * ret;
-    gint i;
     gchar * string_copy;
 
     ret = g_ptr_array_sized_new(arr->len);
@@ -156,7 +155,7 @@ static GPtrArray * string_array_copy(GPtrArray * arr)
         return NULL;
     }
 
-    for ( i = 0 ; i < arr->len ; i++)
+    for (gint i = 0 ; i < arr->len ; i++)
     {
         string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
         if (! string_copy)
