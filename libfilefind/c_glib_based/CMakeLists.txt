@@ -9,6 +9,8 @@ INCLUDE(FindPkgConfig)
 
 SET(MYNAME "filefind")
 SET(DEBUG "" CACHE BOOL "Add debugging information")
+option (DISABLE_APPLYING_RPATH "Disable applying rpath")
+
 # This is the equivalent to perform a "make dist"/"make distdir" etc.
 SET(CPACK_PACKAGE_NAME "lib${MYNAME}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A C Library for Traversing a Directory Recursively")
@@ -25,27 +27,12 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY} ${CPAC
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
 SET(CPACK_SOURCE_IGNORE_FILES
-    "/_CPack_Packages/"
-    "/CMakeFiles/"
-    "/.deps/"
-    "libfilefind-[0-9]+\\\\.[0-9]+\\\\.[0-9]+(-Source|-Linux|)(/|\\\\.(sh|tar\\\\.(gz|bz2|Z|lzma|xz))$)"
-    "\\\\.o$"
-    "~$"
-    "/lib(filefind)\\\\.a$"
-    "\\\\.so(\\\\.[0-9]+)*$"
-    "/.svn/"
-    "/CMakeCache.txt$"
-    "/Makefile$"
-    "/CTestTestfile.cmake$"
-    "/cmake_install.cmake$"
-    "/CPackConfig.cmake$"
-    "/CPackSourceConfig.cmake$"
-    "/minifind$"
+    "/\\\\.git/"
+    "/\\\\.tidyall\\\\.d/"
     "/tags$"
-    "/config\\\\.h$"
-    "/Testing/"
-    "/test_rwlock$"
-    "/test_rwlock_2$"
+    "\\\\.swp$"
+    "ids-whitelist\\\\.txt"
+    "~$"
 )
 
 IF (WIN32 AND NOT UNIX)
@@ -65,28 +52,30 @@ IF (WIN32 AND NOT UNIX)
     SET(CPACK_NSIS_MODIFY_PATH "ON")
 ENDIF ()
 
-### This is to set the RPATH correctly, so when installed under a prefix
-### the executables will find the libraries.
-###
-### See:
-###
-### http://www.cmake.org/Wiki/CMake_RPATH_handling
-###
-### (Taken from that wiki page)
+IF (NOT DISABLE_APPLYING_RPATH)
+    ### This is to set the RPATH correctly, so when installed under a prefix
+    ### the executables will find the libraries.
+    ###
+    ### See:
+    ###
+    ### http://www.cmake.org/Wiki/CMake_RPATH_handling
+    ###
+    ### (Taken from that wiki page)
 
-# use, i.e. don't skip the full RPATH for the build tree
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    # use, i.e. don't skip the full RPATH for the build tree
+    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 
-# when building, don't use the install RPATH already
-# (but later on when installing)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    # when building, don't use the install RPATH already
+    # (but later on when installing)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 
-# the RPATH to be used when installing
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    # the RPATH to be used when installing
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
 
-# add the automatically determined parts of the RPATH
-# which point to directories outside the build tree to the install RPATH
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    # add the automatically determined parts of the RPATH
+    # which point to directories outside the build tree to the install RPATH
+    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ENDIF ()
 
 INCLUDE(CPack)
 
@@ -102,20 +91,6 @@ ENDIF ()
 IF (${DEBUG})
     ADD_DEFINITIONS("-DFILEFIND_DEBUG=1")
 ENDIF ()
-
-# Inspired from /usr/share/autoconf/autoconf/c.m4
-FOREACH(KEYWORD "inline" "__inline__" "__inline")
-    IF(NOT DEFINED HAVE_C_INLINE)
-        TRY_COMPILE(C_HAS_${KEYWORD} "${CMAKE_CURRENT_BINARY_DIR}"
-            "${CMAKE_CURRENT_SOURCE_DIR}/test_inline.c"
-            COMPILE_DEFINITIONS "-Dinline=${KEYWORD}")
-        IF(C_HAS_${KEYWORD})
-            SET(HAVE_C_INLINE TRUE)
-            SET(FCS_INLINE_KEYWORD "${KEYWORD}")
-        ENDIF ()
-    ENDIF ()
-ENDFOREACH ()
-
 
 CONFIGURE_FILE(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
