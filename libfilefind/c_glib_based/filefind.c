@@ -48,12 +48,12 @@ enum
 };
 
 #ifdef G_OS_WIN32
-typedef struct _g_stat_struct mystat_t;
+typedef struct _g_stat_struct my_stat_type;
 #else
-typedef struct stat mystat_t;
+typedef struct stat my_stat_type;
 #endif
 
-typedef gint status_t;
+typedef gint status_type;
 
 enum FILEFIND_STATUS
 {
@@ -76,11 +76,11 @@ struct path_component_struct
     GPtrArray * files;
     gchar * last_dir_scanned;
     gboolean open_dir_ret;
-    mystat_t stat_ret;
+    my_stat_type stat_ret;
     GPtrArray * traverse_to;
     gint next_traverse_to_idx;
     GTree * inodes;
-    status_t (*move_next)(
+    status_type (*move_next)(
         struct path_component_struct * self,
         struct file_finder_struct * top
     );
@@ -94,7 +94,7 @@ typedef struct
     gchar * basename;
     GPtrArray * dir_components;
     gchar * base;
-    mystat_t stat_ret;
+    my_stat_type stat_ret;
     gboolean is_file;
     gboolean is_dir;
     gboolean is_link;
@@ -102,7 +102,7 @@ typedef struct
 
 struct file_finder_struct
 {
-    mystat_t top_stat;
+    my_stat_type top_stat;
     GPtrArray * dir_stack;
     /* TODO : make curr_comps with GDestroyNotify of g_free. */
     GPtrArray * curr_comps;
@@ -214,7 +214,7 @@ static GCC_INLINE ino_t path_component_get_inode(path_component_t * self)
 }
 
 #if 0
-static gboolean path_component_is_same_inode(path_component_t * self, mystat_t * st)
+static gboolean path_component_is_same_inode(path_component_t * self, my_stat_type * st)
 {
     return
     (
@@ -251,7 +251,7 @@ gint indirect_lexic_compare(
     return g_strcmp0((*(const gchar * *)a), (*(const gchar * *)b));
 }
 
-static status_t path_component_calc_dir_files(
+static status_type path_component_calc_dir_files(
     path_component_t * self,
     gchar * dir_str)
 {
@@ -305,11 +305,11 @@ static status_t path_component_calc_dir_files(
     }
 }
 
-static status_t path_component_set_up_dir(
+static status_type path_component_set_up_dir(
     path_component_t * self,
     gchar * dir_str)
 {
-    status_t ret;
+    status_type ret;
 
     if (self->files)
     {
@@ -341,7 +341,7 @@ static status_t path_component_set_up_dir(
     return FILEFIND_STATUS_OK;
 }
 
-static status_t path_component_component_open_dir(
+static status_type path_component_component_open_dir(
         path_component_t * self,
         gchar * dir_str)
 {
@@ -456,11 +456,11 @@ static void file_finder_fill_actions(
     path_component_t * from
 );
 
-static status_t file_finder_open_dir(file_finder_t * top);
+static status_type file_finder_open_dir(file_finder_t * top);
 static gboolean file_finder_increment_target_index(file_finder_t * top);
-static status_t file_finder_calc_curr_path(file_finder_t * top);
+static status_type file_finder_calc_curr_path(file_finder_t * top);
 static gchar * file_finder_calc_next_target(file_finder_t * top);
-static status_t file_finder_mystat(file_finder_t * top);
+static status_type file_finder_mystat(file_finder_t * top);
 
 static GCC_INLINE path_component_t * file_finder_current_father(
     file_finder_t * top
@@ -473,7 +473,7 @@ static GCC_INLINE path_component_t * file_finder_current_father(
     return g_ptr_array_index(dir_stack, dir_stack->len-2);
 }
 
-static status_t deep_path_move_next(
+static status_type deep_path_move_next(
     path_component_t * self,
     file_finder_t * top)
 {
@@ -529,13 +529,12 @@ static status_t deep_path_move_next(
     return FILEFIND_STATUS_OK;
 }
 
-static status_t path_component_move_to_next_target(
+static status_type path_component_move_to_next_target(
     path_component_t * self,
     file_finder_t * top,
     const gchar * * next_target
     )
 {
-    status_t status;
     gchar * target, * target_copy;
 
     *next_target = NULL;
@@ -566,7 +565,7 @@ static status_t path_component_move_to_next_target(
 
     g_ptr_array_add (top->curr_comps, target_copy);
 
-    status = file_finder_calc_curr_path(top);
+    const status_type status = file_finder_calc_curr_path(top);
 
     if (status == FILEFIND_STATUS_OUT_OF_MEM)
     {
@@ -578,7 +577,7 @@ static status_t path_component_move_to_next_target(
     return FILEFIND_STATUS_OK;
 }
 
-static status_t path_component_insert_inode_into_tree(
+static status_type path_component_insert_inode_into_tree(
     path_component_t * self,
     GTree * find, const intptr_t depth)
 {
@@ -608,7 +607,6 @@ static path_component_t * deep_path_new(
 {
     path_component_t * self;
     GTree * find;
-    status_t status;
 
     self = g_new0(path_component_t, 1);
 
@@ -640,7 +638,7 @@ static path_component_t * deep_path_new(
 
     g_ptr_array_add(top->curr_comps, g_strdup(""));
 
-    status = file_finder_open_dir(top);
+    const status_type status = file_finder_open_dir(top);
 
     if (! status)
     {
@@ -655,18 +653,16 @@ static path_component_t * deep_path_new(
     }
 }
 
-static status_t top_path_move_next(
+static status_type top_path_move_next(
     path_component_t * self,
     file_finder_t * top)
 {
-    status_t status;
-
     while (file_finder_increment_target_index(top))
     {
         const gchar * next_target;
 
         /* next_target is a copy and should not be freed */
-        status = path_component_move_to_next_target(self, top, &next_target);
+        const status_type status = path_component_move_to_next_target(self, top, &next_target);
 
         if (status == FILEFIND_STATUS_OUT_OF_MEM)
         {
@@ -946,7 +942,7 @@ static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
  * Calculates curr_path from self->curr_comps.
  * Must be called whenever curr_comps is modified.
  */
-static status_t file_finder_calc_curr_path(file_finder_t * self)
+static status_type file_finder_calc_curr_path(file_finder_t * self)
 {
     gchar * * components;
 
@@ -1010,7 +1006,7 @@ static void item_result_free(item_result_t * item)
     return;
 }
 
-static status_t file_finder_calc_current_item_obj(
+static status_type file_finder_calc_current_item_obj(
     file_finder_t * self,
     item_result_t * * item
     )
@@ -1106,14 +1102,14 @@ cleanup:
     return FILEFIND_STATUS_OUT_OF_MEM;
 }
 
-static status_t file_finder_process_current(file_finder_t * top);
-static status_t file_finder_master_move_to_next(file_finder_t * top);
-static status_t file_finder_me_die(file_finder_t * top);
+static status_type file_finder_process_current(file_finder_t * top);
+static status_type file_finder_master_move_to_next(file_finder_t * top);
+static status_type file_finder_me_die(file_finder_t * top);
 
 int file_find_next(file_find_handle_t * handle)
 {
     file_finder_t * self;
-    status_t total_status, local_status;
+    status_type total_status, local_status;
 
     self = (file_finder_t *)handle;
 
@@ -1189,14 +1185,14 @@ static gchar * file_finder_calc_next_target(file_finder_t * self)
     }
 }
 
-static status_t file_finder_master_move_to_next(file_finder_t * self)
+static status_type file_finder_master_move_to_next(file_finder_t * self)
 {
     return self->current->move_next(self->current, self);
 }
 
-static status_t file_finder_become_default(file_finder_t * self);
+static status_type file_finder_become_default(file_finder_t * self);
 
-static status_t file_finder_me_die(file_finder_t * self)
+static status_type file_finder_me_die(file_finder_t * self)
 {
     if (self->dir_stack->len > 1)
     {
@@ -1210,7 +1206,7 @@ static status_t file_finder_me_die(file_finder_t * self)
     }
 }
 
-static status_t file_finder_become_default(file_finder_t * self)
+static status_type file_finder_become_default(file_finder_t * self)
 {
     path_component_free(
         (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
@@ -1235,9 +1231,7 @@ static status_t file_finder_become_default(file_finder_t * self)
          */
         if (self->should_traverse_depth_first)
         {
-            status_t status;
-
-            status = file_finder_calc_curr_path(self);
+            const status_type status = file_finder_calc_curr_path(self);
 
             if (status != FILEFIND_STATUS_OK)
             {
@@ -1261,7 +1255,7 @@ static void file_finder_fill_actions(
     return;
 }
 
-static status_t file_finder_mystat(file_finder_t * self)
+static status_type file_finder_mystat(file_finder_t * self)
 {
     g_lstat(self->curr_path, &(self->top_stat));
 
@@ -1272,9 +1266,9 @@ static status_t file_finder_mystat(file_finder_t * self)
     return FILEFIND_STATUS_SKIP;
 }
 
-static status_t file_finder_filter_wrapper(file_finder_t * self);
+static status_type file_finder_filter_wrapper(file_finder_t * self);
 
-static status_t file_finder_check_process_current(file_finder_t * self)
+static status_type file_finder_check_process_current(file_finder_t * self)
 {
     if (! self->current->curr_file)
     {
@@ -1284,11 +1278,11 @@ static status_t file_finder_check_process_current(file_finder_t * self)
     return file_finder_filter_wrapper(self);
 }
 
-static status_t file_finder_process_current_actions(file_finder_t * self);
+static status_type file_finder_process_current_actions(file_finder_t * self);
 
-static status_t file_finder_process_current(file_finder_t * self)
+static status_type file_finder_process_current(file_finder_t * self)
 {
-    status_t ret;
+    status_type ret;
 
     ret = file_finder_check_process_current(self);
 
@@ -1302,15 +1296,15 @@ static status_t file_finder_process_current(file_finder_t * self)
     }
 }
 
-static status_t file_finder_set_obj(file_finder_t * self)
+static status_type file_finder_set_obj(file_finder_t * self)
 {
     free_item_obj(self);
     return file_finder_calc_current_item_obj(self, &(self->item_obj));
 }
 
-static status_t file_finder_run_cb(file_finder_t * self)
+static status_type file_finder_run_cb(file_finder_t * self)
 {
-    status_t ret;
+    status_type ret;
 
     ret = file_finder_set_obj(self);
 
@@ -1324,16 +1318,15 @@ static status_t file_finder_run_cb(file_finder_t * self)
     return FILEFIND_STATUS_OK;
 }
 
-static status_t file_finder_recurse(file_finder_t * self);
+static status_type file_finder_recurse(file_finder_t * self);
 
-static status_t file_finder_process_current_actions(file_finder_t * self)
+static status_type file_finder_process_current_actions(file_finder_t * self)
 {
     while (self->current->next_action_idx < NUM_ACTIONS)
     {
-        gint action;
-        status_t status;
+        status_type status;
 
-        action = self->current->actions[(self->current->next_action_idx)++];
+        const gint action = self->current->actions[(self->current->next_action_idx)++];
 
         switch (action)
         {
@@ -1359,14 +1352,13 @@ static status_t file_finder_process_current_actions(file_finder_t * self)
     return FILEFIND_STATUS_FALSE;
 }
 
-static status_t file_finder_check_subdir(file_finder_t * self);
+static status_type file_finder_check_subdir(file_finder_t * self);
 
-static status_t file_finder_recurse(file_finder_t * self)
+static status_type file_finder_recurse(file_finder_t * self)
 {
-    status_t status;
     path_component_t * deep_path;
 
-    status = file_finder_check_subdir(self);
+    const status_type status = file_finder_check_subdir(self);
 
     if (status == FILEFIND_STATUS_FALSE)
     {
@@ -1390,7 +1382,7 @@ static status_t file_finder_recurse(file_finder_t * self)
     return FILEFIND_STATUS_FALSE;
 }
 
-static status_t file_finder_filter_wrapper(file_finder_t * self)
+static status_type file_finder_filter_wrapper(file_finder_t * self)
 {
     if (self->filter_callback)
     {
@@ -1407,12 +1399,10 @@ static status_t file_finder_filter_wrapper(file_finder_t * self)
     }
 }
 
-static status_t file_finder_is_loop(file_finder_t * self);
+static status_type file_finder_is_loop(file_finder_t * self);
 
-static status_t file_finder_check_subdir(file_finder_t * self)
+static status_type file_finder_check_subdir(file_finder_t * self)
 {
-    status_t status;
-
     /*
      * If current is not a directory always return 0, because we may
      * be asked to traverse single-files.
@@ -1438,7 +1428,7 @@ static status_t file_finder_check_subdir(file_finder_t * self)
         return FILEFIND_STATUS_FALSE;
     }
 
-    status = file_finder_is_loop(self);
+    const status_type status = file_finder_is_loop(self);
 
     if (status == FILEFIND_STATUS_OUT_OF_MEM)
     {
@@ -1448,7 +1438,7 @@ static status_t file_finder_check_subdir(file_finder_t * self)
     return ((status == FILEFIND_STATUS_OK) ? FILEFIND_STATUS_FALSE : FILEFIND_STATUS_OK);
 }
 
-static status_t file_finder_is_loop(file_finder_t * self)
+static status_type file_finder_is_loop(file_finder_t * self)
 {
     ino_t inode;
     inode_data_type key;
@@ -1474,7 +1464,7 @@ static status_t file_finder_is_loop(file_finder_t * self)
     }
 }
 
-static status_t file_finder_open_dir(file_finder_t * self)
+static status_type file_finder_open_dir(file_finder_t * self)
 {
     return path_component_component_open_dir(self->current, self->curr_path);
 }
@@ -1486,14 +1476,13 @@ int file_find_set_traverse_to(
 )
 {
     file_finder_t * self;
-    status_t status;
     int up_to_i;
     GPtrArray * traverse_to;
     gchar * new_string;
 
     self = (file_finder_t *)handle;
 
-    status = file_finder_open_dir(self);
+    const status_type status = file_finder_open_dir(self);
 
     if (status == FILEFIND_STATUS_OUT_OF_MEM)
     {
@@ -1590,14 +1579,13 @@ int file_find_get_current_node_files_list(
 )
 {
     file_finder_t * self;
-    status_t status;
 
     self = (file_finder_t *)handle;
 
     *ptr_to_num_files = 0;
     *ptr_to_file_names = NULL;
 
-    status = file_finder_open_dir(self);
+    const status_type status = file_finder_open_dir(self);
 
     if (status == FILEFIND_STATUS_OUT_OF_MEM)
     {
@@ -1606,8 +1594,6 @@ int file_find_get_current_node_files_list(
 
     if (status == FILEFIND_STATUS_OK)
     {
-
-
         return glib_strings_array_to_c(
             self->current->files,
             0,
