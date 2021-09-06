@@ -727,7 +727,7 @@ static path_component_t * top_path_new(
     return self;
 }
 
-static void path_component_free(path_component_t * self)
+static void path_component_free(path_component_t * const self)
 {
     if (self->curr_file)
     {
@@ -883,7 +883,7 @@ cleanup:
     return FILE_FIND_OUT_OF_MEMORY;
 }
 
-static void file_finder_calc_default_actions(file_finder_t * self)
+static void file_finder_calc_default_actions(file_finder_t * const self)
 {
     int calc_obj = self->callback ? ACTION_RUN_CB : ACTION_SET_OBJ;
 
@@ -906,9 +906,7 @@ void file_find_set_callback(
     void (*callback)(const char * filename, void * context)
 )
 {
-    file_finder_t * self;
-
-    self = (file_finder_t *)handle;
+    file_finder_t * const self = (file_finder_t *)handle;
 
     self->callback = callback;
 
@@ -922,9 +920,7 @@ void file_find_set_should_traverse_depth_first(
     int should_traverse_depth_first
 )
 {
-    file_finder_t * self;
-
-    self = (file_finder_t *)handle;
+    file_finder_t * const self = (file_finder_t *)handle;
 
     self->should_traverse_depth_first = should_traverse_depth_first;
 
@@ -933,7 +929,7 @@ void file_find_set_should_traverse_depth_first(
     return;
 }
 
-static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
+static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * const self)
 {
     return (!self->top_is_dir);
 }
@@ -942,7 +938,7 @@ static GCC_INLINE gboolean file_finder_curr_not_a_dir(file_finder_t * self)
  * Calculates curr_path from self->curr_comps.
  * Must be called whenever curr_comps is modified.
  */
-static status_type file_finder_calc_curr_path(file_finder_t * self)
+static status_type file_finder_calc_curr_path(file_finder_t * const self)
 {
     gchar * * components;
 
@@ -1007,7 +1003,7 @@ static void item_result_free(item_result_t * item)
 }
 
 static status_type file_finder_calc_current_item_obj(
-    file_finder_t * self,
+    file_finder_t * const self,
     item_result_t * * item
     )
 {
@@ -1108,12 +1104,9 @@ static status_type file_finder_me_die(file_finder_t * top);
 
 int file_find_next(file_find_handle_t * handle)
 {
-    file_finder_t * self;
-    status_type total_status, local_status;
+    file_finder_t * const self = (file_finder_t *)handle;
 
-    self = (file_finder_t *)handle;
-
-    total_status = FILEFIND_STATUS_FALSE;
+    status_type total_status = FILEFIND_STATUS_FALSE;
     while (! (total_status == FILEFIND_STATUS_OK))
     {
         total_status = file_finder_process_current(self);
@@ -1123,7 +1116,7 @@ int file_find_next(file_find_handle_t * handle)
         }
         else if (total_status == FILEFIND_STATUS_FALSE)
         {
-            local_status = file_finder_master_move_to_next(self);
+            const status_type local_status = file_finder_master_move_to_next(self);
 
             if (local_status == FILEFIND_STATUS_OUT_OF_MEM)
             {
@@ -1153,14 +1146,12 @@ cleanup:
 
 const gchar * file_find_get_path(file_find_handle_t * handle)
 {
-    file_finder_t * self;
-
-    self = (file_finder_t *)handle;
+    file_finder_t * const self = (file_finder_t *)handle;
 
     return self->item_obj ? self->item_obj->path : NULL;
 }
 
-static gboolean file_finder_increment_target_index(file_finder_t * self)
+static gboolean file_finder_increment_target_index(file_finder_t * const self)
 {
     return (++self->target_index < self->targets->len);
 }
@@ -1169,7 +1160,7 @@ static gboolean file_finder_increment_target_index(file_finder_t * self)
  * TODO : can this return NULL if it reached the end rather than ran out
  * of memory?
  * */
-static gchar * file_finder_calc_next_target(file_finder_t * self)
+static gchar * file_finder_calc_next_target(file_finder_t * const self)
 {
     gchar * target;
 
@@ -1185,14 +1176,14 @@ static gchar * file_finder_calc_next_target(file_finder_t * self)
     }
 }
 
-static status_type file_finder_master_move_to_next(file_finder_t * self)
+static status_type file_finder_master_move_to_next(file_finder_t * const self)
 {
     return self->current->move_next(self->current, self);
 }
 
 static status_type file_finder_become_default(file_finder_t * self);
 
-static status_type file_finder_me_die(file_finder_t * self)
+static status_type file_finder_me_die(file_finder_t * const self)
 {
     if (self->dir_stack->len > 1)
     {
@@ -1206,7 +1197,7 @@ static status_type file_finder_me_die(file_finder_t * self)
     }
 }
 
-static status_type file_finder_become_default(file_finder_t * self)
+static status_type file_finder_become_default(file_finder_t * const self)
 {
     path_component_free(
         (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
@@ -1245,7 +1236,7 @@ static status_type file_finder_become_default(file_finder_t * self)
 
 
 static void file_finder_fill_actions(
-    file_finder_t * self,
+    file_finder_t * const self,
     path_component_t * other
 )
 {
@@ -1255,7 +1246,7 @@ static void file_finder_fill_actions(
     return;
 }
 
-static status_type file_finder_mystat(file_finder_t * self)
+static status_type file_finder_mystat(file_finder_t * const self)
 {
     g_lstat(self->curr_path, &(self->top_stat));
 
@@ -1268,7 +1259,7 @@ static status_type file_finder_mystat(file_finder_t * self)
 
 static status_type file_finder_filter_wrapper(file_finder_t * self);
 
-static status_type file_finder_check_process_current(file_finder_t * self)
+static status_type file_finder_check_process_current(file_finder_t * const self)
 {
     if (! self->current->curr_file)
     {
@@ -1280,7 +1271,7 @@ static status_type file_finder_check_process_current(file_finder_t * self)
 
 static status_type file_finder_process_current_actions(file_finder_t * self);
 
-static status_type file_finder_process_current(file_finder_t * self)
+static status_type file_finder_process_current(file_finder_t * const self)
 {
     status_type ret;
 
@@ -1296,13 +1287,13 @@ static status_type file_finder_process_current(file_finder_t * self)
     }
 }
 
-static status_type file_finder_set_obj(file_finder_t * self)
+static status_type file_finder_set_obj(file_finder_t * const self)
 {
     free_item_obj(self);
     return file_finder_calc_current_item_obj(self, &(self->item_obj));
 }
 
-static status_type file_finder_run_cb(file_finder_t * self)
+static status_type file_finder_run_cb(file_finder_t * const self)
 {
     status_type ret;
 
@@ -1320,7 +1311,7 @@ static status_type file_finder_run_cb(file_finder_t * self)
 
 static status_type file_finder_recurse(file_finder_t * self);
 
-static status_type file_finder_process_current_actions(file_finder_t * self)
+static status_type file_finder_process_current_actions(file_finder_t * const self)
 {
     while (self->current->next_action_idx < NUM_ACTIONS)
     {
@@ -1354,7 +1345,7 @@ static status_type file_finder_process_current_actions(file_finder_t * self)
 
 static status_type file_finder_check_subdir(file_finder_t * self);
 
-static status_type file_finder_recurse(file_finder_t * self)
+static status_type file_finder_recurse(file_finder_t * const self)
 {
     path_component_t * deep_path;
 
@@ -1382,7 +1373,7 @@ static status_type file_finder_recurse(file_finder_t * self)
     return FILEFIND_STATUS_FALSE;
 }
 
-static status_type file_finder_filter_wrapper(file_finder_t * self)
+static status_type file_finder_filter_wrapper(file_finder_t * const self)
 {
     if (self->filter_callback)
     {
@@ -1401,7 +1392,7 @@ static status_type file_finder_filter_wrapper(file_finder_t * self)
 
 static status_type file_finder_is_loop(file_finder_t * self);
 
-static status_type file_finder_check_subdir(file_finder_t * self)
+static status_type file_finder_check_subdir(file_finder_t * const self)
 {
     /*
      * If current is not a directory always return 0, because we may
@@ -1438,7 +1429,7 @@ static status_type file_finder_check_subdir(file_finder_t * self)
     return ((status == FILEFIND_STATUS_OK) ? FILEFIND_STATUS_FALSE : FILEFIND_STATUS_OK);
 }
 
-static status_type file_finder_is_loop(file_finder_t * self)
+static status_type file_finder_is_loop(file_finder_t * const self)
 {
     ino_t inode;
     inode_data_type key;
@@ -1464,7 +1455,7 @@ static status_type file_finder_is_loop(file_finder_t * self)
     }
 }
 
-static status_type file_finder_open_dir(file_finder_t * self)
+static status_type file_finder_open_dir(file_finder_t * const self)
 {
     return path_component_component_open_dir(self->current, self->curr_path);
 }
@@ -1475,12 +1466,11 @@ int file_find_set_traverse_to(
     char * * children
 )
 {
-    file_finder_t * self;
     int up_to_i;
     GPtrArray * traverse_to;
     gchar * new_string;
 
-    self = (file_finder_t *)handle;
+    file_finder_t * const self = (file_finder_t *)handle;
 
     const status_type status = file_finder_open_dir(self);
 
@@ -1578,9 +1568,7 @@ int file_find_get_current_node_files_list(
     char * * * ptr_to_file_names
 )
 {
-    file_finder_t * self;
-
-    self = (file_finder_t *)handle;
+    file_finder_t * const self = (file_finder_t *)handle;
 
     *ptr_to_num_files = 0;
     *ptr_to_file_names = NULL;
