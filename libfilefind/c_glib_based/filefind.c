@@ -86,7 +86,7 @@ struct path_component_struct
     );
 };
 
-typedef struct path_component_struct path_component_t;
+typedef struct path_component_struct path_component_type;
 
 typedef struct
 {
@@ -107,7 +107,7 @@ struct file_finder_struct
     /* TODO : make curr_comps with GDestroyNotify of g_free. */
     GPtrArray * curr_comps;
     dev_t dev;
-    path_component_t * current;
+    path_component_type * current;
     gchar * curr_path;
     /* The default actions. */
     gint def_actions[2];
@@ -187,7 +187,7 @@ static void string_array_free(GPtrArray * arr)
     return;
 }
 
-static GPtrArray * path_component_files_copy(path_component_t * self)
+static GPtrArray * path_component_files_copy(path_component_type * self)
 {
     return string_array_copy(self->files);
 }
@@ -197,24 +197,24 @@ static GPtrArray * path_component_files_copy(path_component_t * self)
  * implementation as a glib array and the pure-C-ish interface.
  * */
 #if 0
-static GPtrArray * path_component_traverse_to_copy(path_component_t * self)
+static GPtrArray * path_component_traverse_to_copy(path_component_type * self)
 {
     return string_array_copy(self->traverse_to);
 }
 #endif
 
-static GCC_INLINE dev_t path_component_get_dev(path_component_t * self)
+static GCC_INLINE dev_t path_component_get_dev(path_component_type * self)
 {
     return self->stat_ret.st_dev;
 }
 
-static GCC_INLINE ino_t path_component_get_inode(path_component_t * self)
+static GCC_INLINE ino_t path_component_get_inode(path_component_type * self)
 {
     return self->stat_ret.st_ino;
 }
 
 #if 0
-static gboolean path_component_is_same_inode(path_component_t * self, my_stat_type * st)
+static gboolean path_component_is_same_inode(path_component_type * self, my_stat_type * st)
 {
     return
     (
@@ -226,7 +226,7 @@ static gboolean path_component_is_same_inode(path_component_t * self, my_stat_ty
 #endif
 
 static gboolean path_component_should_scan_dir(
-    path_component_t * self,
+    path_component_type * self,
     gchar * dir_str)
 {
     if (! g_strcmp0(self->last_dir_scanned, dir_str))
@@ -252,7 +252,7 @@ gint indirect_lexic_compare(
 }
 
 static status_type path_component_calc_dir_files(
-    path_component_t * self,
+    path_component_type * self,
     gchar * dir_str)
 {
     GPtrArray * files;
@@ -306,7 +306,7 @@ static status_type path_component_calc_dir_files(
 }
 
 static status_type path_component_set_up_dir(
-    path_component_t * self,
+    path_component_type * self,
     gchar * dir_str)
 {
     status_type ret;
@@ -342,7 +342,7 @@ static status_type path_component_set_up_dir(
 }
 
 static status_type path_component_component_open_dir(
-        path_component_t * self,
+        path_component_type * self,
         gchar * dir_str)
 {
     if (! path_component_should_scan_dir(self, dir_str))
@@ -358,7 +358,7 @@ static status_type path_component_component_open_dir(
     }
 }
 
-static const gchar * path_component_next_traverse_to(path_component_t * self)
+static const gchar * path_component_next_traverse_to(path_component_type * self)
 {
     const gchar * next_fn;
 
@@ -453,7 +453,7 @@ static void inode_tree_destroy_val(gpointer data)
 
 static void file_finder_fill_actions(
     file_finder_t * top,
-    path_component_t * from
+    path_component_type * from
 );
 
 static status_type file_finder_open_dir(file_finder_t * top);
@@ -462,7 +462,7 @@ static status_type file_finder_calc_curr_path(file_finder_t * top);
 static gchar * file_finder_calc_next_target(file_finder_t * top);
 static status_type file_finder_mystat(file_finder_t * top);
 
-static GCC_INLINE path_component_t * file_finder_current_father(
+static GCC_INLINE path_component_type * file_finder_current_father(
     file_finder_t * top
     )
 {
@@ -474,10 +474,10 @@ static GCC_INLINE path_component_t * file_finder_current_father(
 }
 
 static status_type deep_path_move_next(
-    path_component_t * self,
+    path_component_type * self,
     file_finder_t * top)
 {
-    path_component_t * current_father;
+    path_component_type * current_father;
     const gchar * next_fn;
 
     current_father = file_finder_current_father(top);
@@ -530,7 +530,7 @@ static status_type deep_path_move_next(
 }
 
 static status_type path_component_move_to_next_target(
-    path_component_t * self,
+    path_component_type * self,
     file_finder_t * top,
     const gchar * * next_target
     )
@@ -578,7 +578,7 @@ static status_type path_component_move_to_next_target(
 }
 
 static status_type path_component_insert_inode_into_tree(
-    path_component_t * self,
+    path_component_type * self,
     GTree * find, const intptr_t depth)
 {
     ino_t inode;
@@ -600,15 +600,15 @@ static status_type path_component_insert_inode_into_tree(
     return FILEFIND_STATUS_OK;
 }
 
-static path_component_t * deep_path_new(
+static path_component_type * deep_path_new(
     file_finder_t * top,
-    path_component_t * from
+    path_component_type * from
 )
 {
-    path_component_t * self;
+    path_component_type * self;
     GTree * find;
 
-    self = g_new0(path_component_t, 1);
+    self = g_new0(path_component_type, 1);
 
     if (! self)
     {
@@ -654,7 +654,7 @@ static path_component_t * deep_path_new(
 }
 
 static status_type top_path_move_next(
-    path_component_t * self,
+    path_component_type * self,
     file_finder_t * top)
 {
     while (file_finder_increment_target_index(top))
@@ -707,13 +707,13 @@ static status_type top_path_move_next(
     return FILEFIND_STATUS_END;
 }
 
-static path_component_t * top_path_new(
+static path_component_type * top_path_new(
     file_finder_t * top
 )
 {
-    path_component_t * self;
+    path_component_type * self;
 
-    self = g_new0(path_component_t, 1);
+    self = g_new0(path_component_type, 1);
 
     if (! self)
     {
@@ -727,7 +727,7 @@ static path_component_t * top_path_new(
     return self;
 }
 
-static void path_component_free(path_component_t * const self)
+static void path_component_free(path_component_type * const self)
 {
     if (self->curr_file)
     {
@@ -776,7 +776,7 @@ static void file_finder_calc_default_actions(file_finder_t * self);
 int file_find_new(file_find_handle_t * * output_handle, const char * first_target)
 {
     file_finder_t * self = NULL;
-    path_component_t * top_path = NULL;
+    path_component_type * top_path = NULL;
 
     *output_handle = NULL;
 
@@ -1200,12 +1200,12 @@ static status_type file_finder_me_die(file_finder_t * const self)
 static status_type file_finder_become_default(file_finder_t * const self)
 {
     path_component_free(
-        (path_component_t *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
+        (path_component_type *)g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
     );
     g_ptr_array_remove_index (self->dir_stack, self->dir_stack->len - 1);
 
     self->current =
-        (path_component_t *)
+        (path_component_type *)
         g_ptr_array_index(self->dir_stack, self->dir_stack->len - 1)
         ;
 
@@ -1237,7 +1237,7 @@ static status_type file_finder_become_default(file_finder_t * const self)
 
 static void file_finder_fill_actions(
     file_finder_t * const self,
-    path_component_t * other
+    path_component_type * other
 )
 {
     memcpy(other->actions, self->def_actions, sizeof(other->actions));
@@ -1347,8 +1347,6 @@ static status_type file_finder_check_subdir(file_finder_t * self);
 
 static status_type file_finder_recurse(file_finder_t * const self)
 {
-    path_component_t * deep_path;
-
     const status_type status = file_finder_check_subdir(self);
 
     if (status == FILEFIND_STATUS_FALSE)
@@ -1360,7 +1358,7 @@ static status_type file_finder_recurse(file_finder_t * const self)
         return FILEFIND_STATUS_OUT_OF_MEM;
     }
 
-    deep_path = deep_path_new(self, self->current);
+    path_component_type * const deep_path = deep_path_new(self, self->current);
 
     if (!deep_path)
     {
