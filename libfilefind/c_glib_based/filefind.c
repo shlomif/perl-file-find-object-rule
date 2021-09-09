@@ -146,10 +146,7 @@ static GCC_INLINE void free_item_obj(file_finder_t * self)
 
 static GPtrArray * string_array_copy(GPtrArray *const arr)
 {
-    GPtrArray * ret;
-    gchar * string_copy;
-
-    ret = g_ptr_array_sized_new(arr->len);
+    GPtrArray *const ret = g_ptr_array_sized_new(arr->len);
     if (! ret)
     {
         return NULL;
@@ -157,7 +154,7 @@ static GPtrArray * string_array_copy(GPtrArray *const arr)
 
     for (gint i = 0 ; i < arr->len ; ++i)
     {
-        string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
+        gchar *const string_copy = g_strdup((gchar *)g_ptr_array_index(arr, i));
         if (! string_copy)
         {
             for (gint prev_i = 0 ; prev_i < i ; ++prev_i)
@@ -255,18 +252,16 @@ static status_type path_component_calc_dir_files(
     path_component_type * self,
     gchar * dir_str)
 {
-    GPtrArray * files;
-    GDir * handle;
     GError * error;
 
-    files = g_ptr_array_new();
+    GPtrArray *const files = g_ptr_array_new();
 
     if (! files)
     {
         return FILEFIND_STATUS_OUT_OF_MEM;
     }
 
-    handle = g_dir_open(dir_str, 0, &error);
+    GDir * const handle = g_dir_open(dir_str, 0, &error);
 
     if (! handle)
     {
@@ -277,10 +272,9 @@ static status_type path_component_calc_dir_files(
     else
     {
         const gchar * filename;
-        gchar * fn_copy;
         while ((filename = g_dir_read_name(handle)))
         {
-            fn_copy = g_strdup(filename);
+            gchar * const fn_copy = g_strdup(filename);
             if (!fn_copy)
             {
                 for (int prev_i = 0 ; prev_i < files->len ; ++prev_i)
