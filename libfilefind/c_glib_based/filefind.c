@@ -98,7 +98,7 @@ typedef struct
     gboolean is_file;
     gboolean is_dir;
     gboolean is_link;
-} item_result_t;
+} item_result_type;
 
 struct file_finder_struct
 {
@@ -111,7 +111,7 @@ struct file_finder_struct
     gchar * curr_path;
     /* The default actions. */
     gint def_actions[2];
-    item_result_t * item_obj;
+    item_result_type * item_obj;
     int target_index;
     GPtrArray * targets;
     gboolean top_is_dir;
@@ -131,7 +131,7 @@ struct file_finder_struct
 
 typedef struct file_finder_struct file_finder_t;
 
-static void item_result_free(item_result_t * item);
+static void item_result_free(item_result_type * item);
 
 static GCC_INLINE void free_item_obj(file_finder_t * self)
 {
@@ -966,7 +966,7 @@ static status_type file_finder_calc_curr_path(file_finder_t * const self)
     return FILEFIND_STATUS_OK;
 }
 
-static void item_result_free(item_result_t * item)
+static void item_result_free(item_result_type * item)
 {
     if (item->path)
     {
@@ -998,10 +998,10 @@ static void item_result_free(item_result_t * item)
 
 static status_type file_finder_calc_current_item_obj(
     file_finder_t * const self,
-    item_result_t * * item
+    item_result_type * * item
     )
 {
-    item_result_t * ret;
+    item_result_type * ret;
     int comp_idx, end_comp_idx;
     gboolean curr_not_a_dir;
     GPtrArray * dir_components;
@@ -1009,7 +1009,7 @@ static status_type file_finder_calc_current_item_obj(
 
     dir_components = NULL;
 
-    ret = g_new0(item_result_t, 1);
+    ret = g_new0(item_result_type, 1);
 
     if (!ret)
     {
