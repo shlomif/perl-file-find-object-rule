@@ -300,19 +300,16 @@ static status_type path_component_calc_dir_files(
 }
 
 static status_type path_component_set_up_dir(
-    path_component_type * self,
-    gchar * dir_str)
+    path_component_type *const self,
+    gchar *const dir_str)
 {
-    status_type ret;
-
     if (self->files)
     {
         string_array_free(self->files);
         self->files = NULL;
     }
 
-    ret = path_component_calc_dir_files(self, dir_str);
-
+    const status_type ret = path_component_calc_dir_files(self, dir_str);
     if (ret)
     {
         return ret;
