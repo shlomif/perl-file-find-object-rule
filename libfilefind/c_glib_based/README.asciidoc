@@ -1,0 +1,5 @@
+This is libfilefind - a C library for recursive directory traversals.
+
+The code was translated from https://www.shlomifish.org/open-source/projects/File-Find-Object/[File-Find-Object] by Olivier Thauvin under the Artistic License Version 2.0.
+
+It makes use of https://en.wikipedia.org/wiki/GLib[GLib], the https://www.shlomifish.org/open-source/portability-libs/[portability library] from the GNOME project.
